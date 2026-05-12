@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Air Routes Navigation in Kolkata</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/map.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1><i class="fas fa-leaf"></i> Clean Air Routes Navigation in Kolkata </h1>
+            <!-- <p>Find healthier paths through Kolkata's air quality landscape</p> -->
+        </div>
+    </header>
+ 
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Map Container -->
+        <div class="map-wrapper">
+            <div id="map"></div>
+            
+            <!-- Map Controls -->
+            <div class="map-controls">
+                <button class="control-btn" id="clearBtn" title="Clear Routes">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button class="control-btn" id="centerBtn" title="Center Map">
+                    <i class="fas fa-crosshairs"></i>
+                </button>
+                <button class="control-btn" id="fullscreenBtn" title="Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+            
+            <!-- Map Legend -->
+            <div class="map-legend">
+                <h4>Air Quality</h4>
+                <div class="legend-item">
+                    <span class="legend-color good"></span>
+                    <span>Good (0-50)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color moderate"></span>
+                    <span>Moderate (51-100)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color unhealthy"></span>
+                    <span>Unhealthy (101-150)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color very-unhealthy"></span>
+                    <span>Very Unhealthy (151+)</span>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <!-- Route Selection -->
+            <div class="panel-section">
+                <h3><i class="fas fa-route"></i> Route Planning</h3>
+                <div class="route-inputs">
+                    <div class="input-group">
+                        <label for="startInput">Start Location</label>
+                        <input type="text" id="startInput" placeholder="Click on map or enter coordinates">
+                        <button class="input-btn" id="locateStartBtn">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </button>
+                    </div>
+                    <div class="input-group">
+                        <label for="endInput">End Location</label>
+                        <input type="text" id="endInput" placeholder="Click on map or enter coordinates">
+                        <button class="input-btn" id="locateEndBtn">
+                            <i class="fas fa-flag-checkered"></i>
+                        </button>
+                    </div>
+                    <button class="btn btn-primary" id="calculateBtn">
+                        <i class="fas fa-calculator"></i> Calculate Routes
+                    </button>
+                </div>
+            </div>
+ 
+            <!-- Pollution Sensitivity -->
+            <div class="panel-section">
+                <h3><i class="fas fa-sliders-h"></i> Pollution Sensitivity</h3>
+                <div class="slider-container">
+                    <input type="range" id="pollutionSlider" min="0" max="10" step="0.5" value="2">
+                    <div class="slider-labels">
+                        <span>Low</span>
+                        <span id="pollutionValue">2.0</span>
+                        <span>High</span>
+                    </div>
+                    <div class="slider-description">
+                        <p id="pollutionDescription">Balanced routing with moderate pollution avoidance</p>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- Route Comparison -->
+            <div class="panel-section">
+                <h3><i class="fas fa-balance-scale"></i> Route Comparison</h3>
+                <div class="route-comparison" id="routeComparison">
+                    <div class="route-card fast-route" id="fastRouteCard">
+                        <h4><i class="fas fa-tachometer-alt"></i> Fastest Route</h4>
+                        <div class="route-stats">
+                            <div class="stat">
+                                <span class="stat-label">Distance</span>
+                                <span class="stat-value" id="fastDistance">--</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Avg AQI</span>
+                                <span class="stat-value" id="fastAQI">--</span>
+                            </div>
+                        </div>
+                        <button class="route-btn" id="showFastBtn">Show Route</button>
+                    </div>
+                    
+                    <div class="route-card clean-route" id="cleanRouteCard">
+                        <h4><i class="fas fa-leaf"></i> Clean Route</h4>
+                        <div class="route-stats">
+                            <div class="stat">
+                                <span class="stat-label">Distance</span>
+                                <span class="stat-value" id="cleanDistance">--</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Avg AQI</span>
+                                <span class="stat-value" id="cleanAQI">--</span>
+                            </div>
+                        </div>
+                        <button class="route-btn" id="showCleanBtn">Show Route</button>
+                    </div>
+                </div>
+                
+                <!-- Comparison Summary -->
+                <div class="comparison-summary" id="comparisonSummary">
+                    <h4>Trade-off Analysis</h4>
+                    <div class="trade-off-item">
+                        <span>Extra Distance:</span>
+                        <span id="extraDistance">--</span>
+                    </div>
+                    <div class="trade-off-item">
+                        <span>AQI Improvement:</span>
+                        <span id="aqiImprovement">--</span>
+                    </div>
+                    <div class="recommendation" id="recommendation">
+                        <i class="fas fa-lightbulb"></i>
+                        <span id="recommendationText">Select start and end points to see recommendations</span>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- AQI Stations -->
+            <div class="panel-section">
+                <h3><i class="fas fa-cloud"></i> AQI Monitoring Stations</h3>
+                <div class="stations-list" id="stationsList">
+                    <div class="loading">Loading AQI stations...</div>
+                </div>
+            </div>
+ 
+            <!-- System Status -->
+            <div class="panel-section">
+                <h3><i class="fas fa-info-circle"></i> System Status</h3>
+                <div class="status-info">
+                    <div class="status-item">
+                        <span>Backend Status:</span>
+                        <span class="status-value" id="backendStatus">Checking...</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Active Stations:</span>
+                        <span class="status-value" id="stationCount">--</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Data Source:</span>
+                        <span class="status-value">Dummy Test Data</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+ 
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Calculating clean air routes...</p>
+        </div>
+    </div>
+ 
+    <!-- Error Toast -->
+    <div class="error-toast" id="errorToast">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span id="errorMessage"></span>
+        <button class="close-btn" id="closeErrorBtn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+ 
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

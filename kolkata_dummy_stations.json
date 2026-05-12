@@ -1,0 +1,177 @@
+[
+  {
+    "name": "Howrah Industrial",
+    "lat": 22.575,
+    "lon": 88.35,
+    "station_id": "strategic_0",
+    "aqi": 266.3
+  },
+  {
+    "name": "Salt Lake Traffic",
+    "lat": 22.58,
+    "lon": 88.38,
+    "station_id": "strategic_1",
+    "aqi": 300
+  },
+  {
+    "name": "Behala Residential",
+    "lat": 22.56,
+    "lon": 88.34,
+    "station_id": "strategic_2",
+    "aqi": 230.7
+  },
+  {
+    "name": "Dumdum Airport",
+    "lat": 22.585,
+    "lon": 88.37,
+    "station_id": "strategic_3",
+    "aqi": 295.9
+  },
+  {
+    "name": "Tollygunge",
+    "lat": 22.54,
+    "lon": 88.35,
+    "station_id": "strategic_4",
+    "aqi": 221.0
+  },
+  {
+    "name": "VIP Road",
+    "lat": 22.59,
+    "lon": 88.36,
+    "station_id": "strategic_5",
+    "aqi": 290.4
+  },
+  {
+    "name": "Victoria Memorial",
+    "lat": 22.5726,
+    "lon": 88.3639,
+    "station_id": "strategic_6",
+    "aqi": 116.9
+  },
+  {
+    "name": "Maidan",
+    "lat": 22.565,
+    "lon": 88.37,
+    "station_id": "strategic_7",
+    "aqi": 30
+  },
+  {
+    "name": "Salt Lake Central Park",
+    "lat": 22.58,
+    "lon": 88.39,
+    "station_id": "strategic_8",
+    "aqi": 67.5
+  },
+  {
+    "name": "Mixed_Station_1_1",
+    "lat": 22.538850000000004,
+    "lon": 88.33015,
+    "station_id": "mixed_1_1",
+    "aqi": 86.5
+  },
+  {
+    "name": "Mixed_Station_1_2",
+    "lat": 22.538850000000004,
+    "lon": 88.3639,
+    "station_id": "mixed_1_2",
+    "aqi": 90.7
+  },
+  {
+    "name": "Mixed_Station_1_3",
+    "lat": 22.538850000000004,
+    "lon": 88.39765,
+    "station_id": "mixed_1_3",
+    "aqi": 79.6
+  },
+  {
+    "name": "Mixed_Station_2_1",
+    "lat": 22.5726,
+    "lon": 88.33015,
+    "station_id": "mixed_2_1",
+    "aqi": 98.2
+  },
+  {
+    "name": "Mixed_Station_2_2",
+    "lat": 22.5726,
+    "lon": 88.3639,
+    "station_id": "mixed_2_2",
+    "aqi": 119.6
+  },
+  {
+    "name": "Mixed_Station_2_3",
+    "lat": 22.5726,
+    "lon": 88.39765,
+    "station_id": "mixed_2_3",
+    "aqi": 73.3
+  },
+  {
+    "name": "Mixed_Station_3_1",
+    "lat": 22.606350000000003,
+    "lon": 88.33015,
+    "station_id": "mixed_3_1",
+    "aqi": 76.2
+  },
+  {
+    "name": "Mixed_Station_3_2",
+    "lat": 22.606350000000003,
+    "lon": 88.3639,
+    "station_id": "mixed_3_2",
+    "aqi": 94.6
+  },
+  {
+    "name": "Mixed_Station_3_3",
+    "lat": 22.606350000000003,
+    "lon": 88.39765,
+    "station_id": "mixed_3_3",
+    "aqi": 75.4
+  },
+  {
+    "name": "Random_Station_18",
+    "lat": 22.54939549626498,
+    "lon": 88.41035300000287,
+    "station_id": "random_18",
+    "aqi": 76.2
+  },
+  {
+    "name": "Random_Station_19",
+    "lat": 22.575579258263218,
+    "lon": 88.34397339871649,
+    "station_id": "random_19",
+    "aqi": 218.1
+  },
+  {
+    "name": "Random_Station_20",
+    "lat": 22.507143664527373,
+    "lon": 88.41402249637142,
+    "station_id": "random_20",
+    "aqi": 89.1
+  },
+  {
+    "name": "Random_Station_21",
+    "lat": 22.626269177457107,
+    "lon": 88.40519040910924,
+    "station_id": "random_21",
+    "aqi": 90.0
+  },
+  {
+    "name": "Random_Station_22",
+    "lat": 22.615515167895325,
+    "lon": 88.36873205822461,
+    "station_id": "random_22",
+    "aqi": 92.0
+  },
+  {
+    "name": "Random_Station_23",
+    "lat": 22.513783405393305,
+    "lon": 88.41201151523845,
+    "station_id": "random_23",
+    "aqi": 86.9
+  },
+  {
+    "name": "Random_Station_24",
+    "lat": 22.52998219491196,
+    "lon": 88.37712796679577,
+    "station_id": "random_24",
+    "aqi": 89.0
+  }
+]

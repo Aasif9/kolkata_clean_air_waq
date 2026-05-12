@@ -1,0 +1,144 @@
+/* Map-specific styles */
+.custom-marker {
+    background: white;
+    border-radius: 50%;
+    border: 3px solid #3498db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #3498db;
+    font-weight: bold;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+ 
+.start-marker {
+    border-color: #27ae60;
+    color: #27ae60;
+}
+ 
+.end-marker {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+ 
+/* AQI Station styles */
+.aqi-station {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+ 
+.aqi-station:hover {
+    transform: scale(1.2);
+    stroke-width: 3;
+}
+ 
+/* Popup styles */
+.station-popup h4,
+.route-popup h4 {
+    margin: 0 0 8px 0;
+    color: #2c3e50;
+}
+ 
+.station-popup p,
+.route-popup p {
+    margin: 4px 0;
+    font-size: 14px;
+}
+ 
+/* Map controls */
+.map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+ 
+.control-btn {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #555;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+ 
+.control-btn:hover {
+    background: #f8f9fa;
+    border-color: #3498db;
+    color: #3498db;
+    transform: translateY(-1px);
+}
+ 
+/* Map legend */
+.map-legend {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    font-size: 12px;
+}
+ 
+.map-legend h4 {
+    margin: 0 0 8px 0;
+    color: #2c3e50;
+    font-size: 14px;
+}
+ 
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+ 
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+ 
+.legend-color.good { background: #2ecc71; }
+.legend-color.moderate { background: #f39c12; }
+.legend-color.unhealthy { background: #e67e22; }
+.legend-color.very-unhealthy { background: #e74c3c; }
+ 
+/* Responsive map adjustments */
+@media (max-width: 768px) {
+    .map-controls {
+        top: 5px;
+        right: 5px;
+    }
+    
+    .control-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    .map-legend {
+        bottom: 5px;
+        left: 5px;
+        padding: 8px;
+        font-size: 11px;
+    }
+    
+    .custom-marker {
+        font-size: 12px;
+    }
+}

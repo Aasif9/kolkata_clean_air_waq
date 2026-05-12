@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Kolkata AQI — Dijkstra (stations) → Road Follow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body, html { height: 100%; margin: 0; }
+    #map { height: 100%; width: 100%; display:block; }
+    .panel {
+      position: absolute; top: 10px; right: 10px; z-index:9999;
+      background: white; padding:10px; border-radius:6px; width:320px;
+      max-height:85vh; overflow:auto; font-family:sans-serif;
+      box-shadow:0 2px 8px rgba(0,0,0,0.2);
+    }
+    .btn { padding:6px 10px; border-radius:4px; background:#2b7cff; color:#fff; cursor:pointer; border:0; margin-right:6px;}
+    .btn.warn { background:#e04b4b; }
+    .small { font-size:12px; color:#555; }
+    .legend { margin-top:8px; font-size:13px; }
+  </style>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div class="panel" id="panel">
+  <div><b>Kolkata AQI Routing (Dijkstra → Road)</b></div>
+  <div class="small">Click map: pick <b>Start</b> then <b>End</b> (snaps to nearest AQI station)</div>
+
+  <div style="margin-top:8px;">
+    <button class="btn" id="clearBtn">Clear Routes</button>
+    <button class="btn warn" id="recalcBtn">Rebuild Graph</button>
+  </div>
+
+  <div class="legend">
+    <div style="margin-top:8px;">🔴 Normal (ORS direct, shortest)</div>
+    <div>🟢 Clean (Dijkstra on AQI stations, expanded to roads)</div>
+    <div style="margin-top:6px;">AQI Marker colors: <span style="color:green">●</span> good &nbsp; <span style="color:orange">●</span> moderate &nbsp; <span style="color:red">●</span> unhealthy</div>
+  </div>
+
+  <div id="info" style="margin-top:8px; font-size:13px;"></div>
+
+  <div style="margin-top:8px;">
+    <label class="small">Pollution factor (how strongly AQI affects path)</label><br/>
+    <input id="pollFactor" type="range" min="0" max="10" step="0.5" value="2" />
+    <div class="small">Value: <span id="pfVal">2</span></div>
+  </div>
+
+  <div style="margin-top:10px;">
+    <b>Selected Route</b>: <span id="selectedRoute">None</span>
+    <div style="margin-top:6px;">
+      <button class="btn" id="selectNormal">Show Normal</button>
+      <button class="btn" id="selectClean">Show Clean</button>
+      <button class="btn" id="startNav">Start Nav</button>
+      <button class="btn warn" id="stopNav">Stop Nav</button>
+    </div>
+  </div>
+
+  <div style="margin-top:8px;"><b>Turn-by-turn</b><div id="steps"></div></div>
+</div>
+
+<script>
+/* ============================
+   CONFIG - set your ORS key
+   ============================ */
+const ORS_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjVlMDAyY2ZjZjk3YTE5MzcxMTZmMmNhNDJkNDdiNjY4MjIwYzNlNDdmZDk0NWM1YzA2MTYyMmEwIiwiaCI6Im11cm11cjY0In0="; // ← REPLACE this with your ORS API key
+const WAQI_TOKEN = "af9e1dad290b59aa59e23fcfb956a42bfd995725"; 
+
+const SW_LAT = 22.487305, SW_LNG = 88.313355, NE_LAT = 22.580238, NE_LNG = 88.396104;
+const MAP_BOUNDS = [[SW_LAT, SW_LNG],[NE_LAT, NE_LNG]];
+const WAQI_BOUNDS_URL = `https://api.waqi.info/map/bounds/?latlng=${SW_LAT},${SW_LNG},${NE_LAT},${NE_LNG}&token=${WAQI_TOKEN}`;
+
+let POLLUTION_FACTOR = parseFloat(document.getElementById('pollFactor').value);
+document.getElementById('pollFactor').addEventListener('input', e => {
+  POLLUTION_FACTOR = parseFloat(e.target.value);
+  document.getElementById('pfVal').innerText = POLLUTION_FACTOR;
+});
+
+/* ============================
+   Map & globals
+   ============================ */
+const map = L.map('map').fitBounds(MAP_BOUNDS);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution:'&copy; OpenStreetMap' }).addTo(map);
+
+let stations = [];         // {name, lat, lng, aqi, marker}
+let graph = {};            // adjacency: graph[i] = [{to, distKm, aqiAvg},...]
+let stationLayerGroup = L.layerGroup().addTo(map);
+
+let startIndex = null, endIndex = null;
+let routeLayers = [];      // drawn polylines
+let normalRoute = null, cleanRoute = null; // store objects
+let navMarker = null, navAnim = null;
+
+/* cache for ORS segment responses to limit API calls */
+const orsSegmentCache = new Map();
+
+/* ============================
+   Helpers
+   ============================ */
+function getAQIColor(aqi){
+  if (aqi === null || aqi === undefined) return '#999';
+  if (aqi <= 50) return 'green';
+  if (aqi <= 100) return 'yellow';
+  if (aqi <= 150) return 'orange';
+  if (aqi <= 200) return 'red';
+  return 'purple';
+}
+function haversineKm(aLat,aLng,bLat,bLng){
+  const R=6371;
+  const dLat=(bLat-aLat)*Math.PI/180, dLng=(bLng-aLng)*Math.PI/180;
+  const s=Math.sin(dLat/2)**2 + Math.cos(aLat*Math.PI/180)*Math.cos(bLat*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1-s));
+}
+function avgAqi(a,b){
+  if (a===null && b===null) return 100;
+  if (a===null) return b;
+  if (b===null) return a;
+  return (a+b)/2;
+}
+
+
+async function loadStations() {
+  stationLayerGroup.clearLayers();
+  stations = [];
+  graph = {};
+
+  document.getElementById('info').innerText = 'Loading WAQI stations...';
+
+  // Multiple bounding boxes around Kolkata (to load more stations)
+  const boxes = [
+    [22.45, 88.25, 22.60, 88.40],
+    [22.45, 88.40, 22.60, 88.55],
+    [22.60, 88.25, 22.75, 88.40],
+    [22.60, 88.40, 22.75, 88.55],
+    [22.50, 88.30, 22.70, 88.50], // overlap box
+    [22.55, 88.32, 22.68, 88.48], // inner box
+  ];
+
+  const fetchedStations = new Map();  // store unique stations
+
+  for (let b of boxes) {
+    const url =
+      `https://api.waqi.info/map/bounds/?latlng=${b[0]},${b[1]},${b[2]},${b[3]}&token=${WAQI_TOKEN}`;
+
+    try {
+      const r = await fetch(url);
+      const j = await r.json();
+
+      if (!j.data) continue;
+
+      j.data.forEach(s => {
+        const key = `${s.lat},${s.lon}`;
+        if (!fetchedStations.has(key)) {
+          fetchedStations.set(key, s);
+        }
+      });
+
+    } catch (err) {
+      console.error("WAQI fetch failed", err);
+    }
+  }
+
+  // Convert map → array
+  const stationList = Array.from(fetchedStations.values());
+
+  stationList.forEach((s, i) => {
+    const aqi = isNaN(Number(s.aqi)) ? null : Number(s.aqi);
+    const lat = s.lat, lon = s.lon;
+    const name = s.station?.name || `station-${i}`;
+
+    const marker = L.circleMarker([lat, lon], {
+      radius: 7,
+      fillColor: getAQIColor(aqi),
+      color: "#222",
+      weight: 1,
+      fillOpacity: 0.95
+    }).addTo(stationLayerGroup)
+      .bindPopup(`<b>${name}</b><br>AQI: ${aqi ?? 'No data'}`);
+
+    stations.push({ name, lat, lng: lon, aqi, marker });
+  });
+
+  document.getElementById('info').innerText =
+    `Loaded ${stations.length} stations (multi-box expanded).`;
+
+  buildGraph();
+}
+
+
+/* ============================
+   Build station graph (nearest neighbors)
+   ============================ */
+function buildGraph(){
+  const N_NEIGHBORS = 6;
+  graph = {};
+  for (let i=0;i<stations.length;i++){
+    const s = stations[i];
+    let arr = [];
+    for (let j=0;j<stations.length;j++){
+      if (i===j) continue;
+      const t = stations[j];
+      const d = haversineKm(s.lat,s.lng,t.lat,t.lng);
+      arr.push({ j, d });
+    }
+    arr.sort((a,b) => a.d - b.d);
+    graph[i] = arr.slice(0, N_NEIGHBORS).map(n => ({ to: n.j, distKm: n.d, aqiAvg: avgAqi(stations[i].aqi, stations[n.j].aqi) }) );
+  }
+  document.getElementById('info').innerText += ' Graph built.';
+}
+
+function findNearestStation(lat,lng){
+  let bestIdx = null, bestD = Infinity;
+  for (let i=0;i<stations.length;i++){
+    const s = stations[i];
+    const d = haversineKm(lat,lng,s.lat,s.lng);
+    if (d < bestD) { bestD = d; bestIdx = i; }
+  }
+  return { idx: bestIdx, distKm: bestD };
+}
+
+/* ============================
+   Dijkstra on station graph
+   cost = distKm * (1 + POLLUTION_FACTOR * (aqiAvg/100))
+   ============================ */
+function dijkstraStationPath(startIdx, endIdx){
+  const n = stations.length;
+  const dist = new Array(n).fill(Infinity);
+  const prev = new Array(n).fill(null);
+  const visited = new Array(n).fill(false);
+  dist[startIdx] = 0;
+
+  for (;;) {
+    let u = -1, best = Infinity;
+    for (let i=0;i<n;i++){
+      if (!visited[i] && dist[i] < best) { best = dist[i]; u = i; }
+    }
+    if (u === -1) break;
+    if (u === endIdx) break;
+    visited[u] = true;
+    const edges = graph[u] || [];
+    for (const e of edges) {
+      const v = e.to;
+      if (visited[v]) continue;
+      const edgePenalty = 1 + (POLLUTION_FACTOR * (e.aqiAvg / 100));
+      const cost = e.distKm * edgePenalty;
+      const alt = dist[u] + cost;
+      if (alt < dist[v]) { dist[v] = alt; prev[v] = u; }
+    }
+  }
+
+  if (!isFinite(dist[endIdx])) return { path: [], cost: Infinity };
+  const path = [];
+  for (let cur = endIdx; cur !== null; cur = prev[cur]) path.push(cur);
+  path.reverse();
+  return { path, cost: dist[endIdx] };
+}
+
+
+async function fetchORSRouteGeom(lat1, lng1, lat2, lng2){
+  const key = `${lat1},${lng1}->${lat2},${lng2}`;
+  if (orsSegmentCache.has(key)) return orsSegmentCache.get(key);
+
+  if (!ORS_KEY || ORS_KEY === "YOUR_OPENROUTESERVICE_KEY") {
+    throw new Error("Please set ORS_KEY at top of script");
+  }
+
+  const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_KEY}&start=${lng1},${lat1}&end=${lng2},${lat2}&geometry=true`;
+  const res = await fetch(url);
+  const json = await res.json();
+  if (!json.features || !json.features.length) throw new Error("ORS returned no route");
+  const coords = json.features[0].geometry.coordinates; // [lng,lat]
+  orsSegmentCache.set(key, coords);
+  return coords;
+}
+
+/* ============================
+   Build full road-following polyline from station index path
+   (for each consecutive station pair request ORS and concatenate)
+   ============================ */
+async function buildRoadPolylineFromStationPath(pathIdx){
+  // pathIdx: array of station indices
+  const fullCoords = [];
+  for (let i=0;i<pathIdx.length-1;i++){
+    const A = stations[pathIdx[i]];
+    const B = stations[pathIdx[i+1]];
+    try {
+      const segCoords = await fetchORSRouteGeom(A.lat, A.lng, B.lat, B.lng);
+      // append; avoid duplicate point when concatenating
+      if (fullCoords.length === 0) {
+        fullCoords.push(...segCoords);
+      } else {
+        // skip the first point of segCoords if equals last of fullCoords
+        const last = fullCoords[fullCoords.length - 1];
+        if (last[0] === segCoords[0][0] && last[1] === segCoords[0][1]) {
+          fullCoords.push(...segCoords.slice(1));
+        } else fullCoords.push(...segCoords);
+      }
+    } catch (e) {
+      console.error("ORS segment failed", e);
+      // fallback: straight line if ORS fails
+      fullCoords.push([A.lng, A.lat]);
+      fullCoords.push([B.lng, B.lat]);
+    }
+  }
+  return fullCoords; // array of [lng,lat]
+}
+
+async function computeAndShowRoutes() {
+  clearRouteLayers();
+
+  // make sure we have real clicked points
+  if (!startPoint || !endPoint) return;
+
+  const A = startPoint;
+  const B = endPoint;
+
+  /* ============================
+     NORMAL ROUTE (RED)
+     ============================ */
+  document.getElementById('info').innerText =
+    'Fetching ORS normal route... (red)';
+
+  let normalCoords;
+  try {
+    const f = await fetchORSRouteGeom(A.lat, A.lng, B.lat, B.lng);
+    normalCoords = f; // array of [lng,lat]
+  } catch (e) {
+    document.getElementById('info').innerText =
+      'ORS normal route failed: ' + (e.message || e);
+    return;
+  }
+
+  // draw normal (red)
+  normalRoute = { coords: normalCoords };
+  const normalLatLngs = normalCoords.map(c => [c[1], c[0]]);
+  const normalLine = L.polyline(normalLatLngs, {
+    color: 'red',
+    weight: 5,
+    opacity: 0.8
+  }).addTo(map);
+  routeLayers.push(normalLine);
+
+  /* ============================
+     CLEAN ROUTE (GREEN)
+     ============================ */
+  document.getElementById('info').innerText =
+    'Computing AQI clean route (Dijkstra)...';
+
+  // NEW: nearest AQI stations to real click points
+  const ns = findNearestStation(A.lat, A.lng).idx;
+  const ne = findNearestStation(B.lat, B.lng).idx;
+
+  // Run Dijkstra between AQI stations
+  const result = dijkstraStationPath(ns, ne);
+
+  if (!result || !result.path || result.path.length < 2) {
+    document.getElementById('info').innerText =
+      'No AQI-station clean route found.';
+    return;
+  }
+
+  /* ============================
+     Build road-following path for clean route
+     ============================ */
+  document.getElementById('info').innerText =
+    'Building road-following clean route (ORS for each segment)...';
+
+  let cleanCoords;
+  try {
+    cleanCoords = await buildRoadPolylineFromStationPath(result.path);
+  } catch (e) {
+    console.error(e);
+    document.getElementById('info').innerText =
+      'Failed to build clean path.';
+    return;
+  }
+
+  // NEW: prepend clicked start & append clicked end
+  cleanCoords.unshift([A.lng, A.lat]);
+  cleanCoords.push([B.lng, B.lat]);
+
+  cleanRoute = {
+    coords: cleanCoords,
+    stationPath: result.path
+  };
+
+  const cleanLatLngs = cleanCoords.map(c => [c[1], c[0]]);
+  const cleanLine = L.polyline(cleanLatLngs, {
+    color: 'green',
+    weight: 6,
+    opacity: 0.9
+  }).addTo(map);
+  routeLayers.push(cleanLine);
+
+  /* ============================
+     Summary
+     ============================ */
+  const normalKm = turf.length(
+    turf.lineString(normalCoords),
+    { units: 'kilometers' }
+  );
+
+  let aqiSum = 0,
+    aqiCount = 0;
+  for (const idx of result.path) {
+    const a = stations[idx].aqi;
+    if (a !== null && !isNaN(a)) {
+      aqiSum += a;
+      aqiCount++;
+    }
+  }
+  const avgAqiStations = aqiCount
+    ? (aqiSum / aqiCount).toFixed(1)
+    : 'N/A';
+
+  document.getElementById('info').innerHTML = `
+    Normal (red): ORS direct.<br/>
+    Clean (green): AQI station chain + ORS segments.<br/>
+    Station nodes: ${result.path.length} | Avg AQI: ${avgAqiStations}<br/>
+    Pollution factor: ${POLLUTION_FACTOR}<br/>
+    Clean route uses ORS for each station segment.
+  `;
+
+  // default selection
+  selectRoute('clean');
+  map.fitBounds(
+    L.featureGroup(routeLayers).getBounds().pad(0.1)
+  );
+}
+
+/* ============================
+   UI helpers
+   ============================ */
+function clearRouteLayers(){
+  routeLayers.forEach(l => map.removeLayer(l));
+  routeLayers = [];
+  if (navMarker) { map.removeLayer(navMarker); navMarker = null; }
+  if (navAnim) { cancelAnimationFrame(navAnim); navAnim = null; }
+}
+function selectRoute(which){
+  document.getElementById('selectedRoute').innerText = which === 'clean' ? 'Clean (green)' : 'Normal (red)';
+  // simply redraw to emphasize selection:
+  // remove all then redraw from stored route objects
+  routeLayers.forEach(l=>map.removeLayer(l)); routeLayers=[];
+  if (normalRoute) {
+    const nl = L.polyline(normalRoute.coords.map(c=>[c[1],c[0]]), { color: which==='normal'?'red':'#f7bdbd', weight: which==='normal'?6:4 }).addTo(map);
+    routeLayers.push(nl);
+  }
+  if (cleanRoute) {
+    const cl = L.polyline(cleanRoute.coords.map(c=>[c[1],c[0]]), { color: which==='clean'?'green':'#cfe9cf', weight: which==='clean'?6:4 }).addTo(map);
+    routeLayers.push(cl);
+  }
+  map._selectedRoute = which;
+}
+
+function startNavigation(){
+  const which = map._selectedRoute || 'clean';
+  const route = which === 'clean' ? cleanRoute : normalRoute;
+  if (!route || !route.coords) return alert('No route to navigate');
+
+  const latlngs = route.coords.map(c => L.latLng(c[1], c[0]));
+  if (navMarker) map.removeLayer(navMarker);
+  navMarker = L.marker(latlngs[0]).addTo(map);
+
+  let posIndex = 0;
+  let lastTime = null;
+  const speed = 40; // m/s ~ 144 km/h; choose slower for realistic - use 10-15 for walking
+  function animate(t){
+    if (!lastTime) lastTime = t;
+    const dt = (t-lastTime)/1000; lastTime = t;
+    let remain = speed * dt;
+    while (remain > 0 && posIndex < latlngs.length-1){
+      const segLen = latlngs[posIndex].distanceTo(latlngs[posIndex+1]);
+      if (remain < segLen){
+        const ratio = remain/segLen;
+        const lat = latlngs[posIndex].lat + (latlngs[posIndex+1].lat - latlngs[posIndex].lat)*ratio;
+        const lng = latlngs[posIndex].lng + (latlngs[posIndex+1].lng - latlngs[posIndex].lng)*ratio;
+        navMarker.setLatLng([lat,lng]);
+        remain = 0;
+      } else {
+        posIndex++;
+        navMarker.setLatLng(latlngs[posIndex]);
+        remain -= segLen;
+      }
+    }
+    if (posIndex < latlngs.length-1) navAnim = requestAnimationFrame(animate);
+    else document.getElementById('info').innerText = 'Navigation finished';
+  }
+  navAnim = requestAnimationFrame(animate);
+  document.getElementById('info').innerText = 'Navigation started (simulated)';
+}
+
+/* ============================
+   Map click - pick nearest station as Start/End (keeps UI)
+   ============================ */
+// actual clicked locations
+let startPoint = null;
+let endPoint = null;
+
+map.on('click', e => {
+  if (!stations.length) return;
+
+  if (!startPoint) {
+    // set start at exact clicked point
+    startPoint = { lat: e.latlng.lat, lng: e.latlng.lng };
+    L.marker(startPoint).addTo(map).bindPopup("<b>Start</b>").openPopup();
+    document.getElementById('info').innerText = "Start selected. Now choose End.";
+    return;
+  }
+
+  if (!endPoint) {
+    // set end at exact clicked point
+    endPoint = { lat: e.latlng.lat, lng: e.latlng.lng };
+    L.marker(endPoint).addTo(map).bindPopup("<b>End</b>").openPopup();
+    document.getElementById('info').innerText = "Computing routes...";
+
+    computeAndShowRoutes();
+    return;
+  }
+
+  // If both chosen, reset
+  startPoint = { lat: e.latlng.lat, lng: e.latlng.lng };
+  endPoint = null;
+  clearRouteLayers();
+  L.marker(startPoint).addTo(map).bindPopup("<b>Start</b>").openPopup();
+  document.getElementById('info').innerText = "Start reset. Choose end.";
+});
+
+
+/* Buttons */
+document.getElementById('clearBtn').addEventListener('click', ()=>{ clearRouteLayers(); startIndex=null; endIndex=null; document.getElementById('info').innerText='Cleared';});
+document.getElementById('recalcBtn').addEventListener('click', ()=>{ buildGraph(); clearRouteLayers(); startIndex=null; endIndex=null; document.getElementById('info').innerText='Graph rebuilt.';});
+document.getElementById('selectNormal').addEventListener('click', ()=>selectRoute('normal'));
+document.getElementById('selectClean').addEventListener('click', ()=>selectRoute('clean'));
+document.getElementById('startNav').addEventListener('click', ()=>startNavigation());
+document.getElementById('stopNav').addEventListener('click', ()=>{ if(navAnim) cancelAnimationFrame(navAnim); if(navMarker) { map.removeLayer(navMarker); navMarker=null;} });
+
+/* Initialize */
+loadStations();
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Kolkata AQI View</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    #map { height: 100vh; width: 100%; }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+  const map = L.map('map').setView([22.55, 88.37], 12);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const token = "af9e1dad290b59aa59e23fcfb956a42bfd995725";
+
+  const swLat = 22.487305;
+  const swLng = 88.313355;
+  const neLat = 22.580238;
+  const neLng = 88.396104;
+
+  const url = `https://api.waqi.info/map/bounds/?latlng=${swLat},${swLng},${neLat},${neLng}&token=${token}`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      data.data.forEach(station => {
+        const aqi = station.aqi;
+        const lat = station.lat;
+        const lng = station.lon;
+
+        let color = "green";
+        if (aqi > 100) color = "orange";
+        if (aqi > 150) color = "red";
+
+        L.circleMarker([lat, lng], {
+          radius: 8,
+          fillColor: color,
+          color: "#000",
+          weight: 1,
+          fillOpacity: 0.9
+        }).addTo(map).bindPopup(`
+          <b>AQI: ${aqi}</b><br>
+          Station: ${station.station.name}
+        `);
+      });
+    });
+</script>
+
+</body>
+</html> -->
