@@ -1,7 +1,6 @@
 import networkx as nx
 import numpy as np
 from geopy.distance import geodesic
-from dummy_aqi_interpolator import DummyAQIInterpolator
  
 class SimplePollutionRouter:
     def __init__(self, graph, aqi_interpolator, pollution_factor=2.0):
@@ -12,11 +11,7 @@ class SimplePollutionRouter:
     def find_fastest_path(self, start_lat, start_lon, end_lat, end_lon):
         """Find fastest path using Dijkstra on travel time"""
         try:
-            # Find nearest nodes
-            start_node = self.aqi_interpolator._nearest_neighbor(start_lat, start_lon)
-            end_node = self.aqi_interpolator._nearest_neighbor(end_lat, end_lon)
-            
-            # Convert to actual graph nodes
+            # Find nearest graph nodes
             start_node = self._find_graph_node(start_lat, start_lon)
             end_node = self._find_graph_node(end_lat, end_lon)
             
@@ -204,8 +199,8 @@ class SimplePollutionRouter:
         }
  
 def test_router():
-    """Test the pollution router"""
-    from basic_network import KolkataRoadNetwork
+    """Test the pollution router with real AQI data"""
+    from aqi_service import AQIInterpolator
     import pickle
     
     # Load network
@@ -217,10 +212,12 @@ def test_router():
         print("Network not found. Run basic_network.py first!")
         return
     
-    # Load AQI interpolator
-    interpolator = DummyAQIInterpolator()
-    if not interpolator.stations:
-        print("No AQI stations found. Run dummy_aqi_generator.py first!")
+    # Load AQI interpolator with real data
+    try:
+        interpolator = AQIInterpolator()
+        print("Loaded real AQI interpolator")
+    except Exception as e:
+        print(f"Failed to load AQI interpolator: {e}")
         return
     
     # Create router

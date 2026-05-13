@@ -1,366 +1,310 @@
 [
   {
-    "name": "Domjur BDO",
-    "aqi": 76.0,
-    "lat": 22.627258,
-    "lon": 88.232762,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Fort William, Kolkata, India",
-    "aqi": 46.0,
-    "lat": 22.55664,
-    "lon": 88.342674,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Rabindra Sarobar, Kolkata, India",
-    "aqi": 30.0,
-    "lat": 22.51106,
-    "lon": 88.35142,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Electrosteel Casting Limited",
-    "aqi": 71.0,
-    "lat": 22.716265,
-    "lon": 88.3744,
-    "station_id": "waqi_unknown"
-  },
-  {
     "name": "Rajarhat BDO Office",
-    "aqi": 70.0,
+    "aqi": 66.0,
     "lat": 22.616833,
     "lon": 88.504528,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Sarojini Naidu College for Women",
-    "aqi": 65.0,
-    "lat": 22.626505,
-    "lon": 88.41833,
+    "name": "North Dumdum Municipality",
+    "aqi": 70.0,
+    "lat": 22.6705117,
+    "lon": 88.43389,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Salap-II",
-    "aqi": 73.0,
-    "lat": 22.605708,
-    "lon": 88.257118,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "East Calcutta Girls College, Lake Town",
-    "aqi": 115.0,
-    "lat": 22.601583,
-    "lon": 88.404556,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Kamarhati Municipality",
-    "aqi": 89.0,
-    "lat": 22.662251,
-    "lon": 88.379349,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Madhyamgram Municipality",
-    "aqi": 65.0,
-    "lat": 22.692911,
-    "lon": 88.46523,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Karunamoye Bus Stand",
-    "aqi": 63.0,
-    "lat": 22.587029,
-    "lon": 88.42074,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bagberia Mouza",
-    "aqi": 99.0,
-    "lat": 22.674252,
-    "lon": 88.515692,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Dhuliya Gram Panchayat",
-    "aqi": 76.0,
-    "lat": 22.579667,
-    "lon": 88.248468,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Ghoramara Mouza",
-    "aqi": 88.0,
-    "lat": 22.736987,
-    "lon": 88.33141,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Kanaipur G.P",
-    "aqi": 82.0,
-    "lat": 22.702348,
-    "lon": 88.321033,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Jadavpur University",
-    "aqi": 69.0,
-    "lat": 22.501592,
-    "lon": 88.371607,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Belur Math, Howrah, India",
+    "name": "Ballygunge Campus, C.U",
     "aqi": 71.0,
-    "lat": 22.629801,
-    "lon": 88.352017,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Anandanagar Panchayat",
-    "aqi": 83.0,
-    "lat": 22.618873,
-    "lon": 88.321871,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Kayemba Mouza",
-    "aqi": 81.0,
-    "lat": 22.676111,
-    "lon": 88.527181,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Old Calcutta Road Checkpost",
-    "aqi": 81.0,
-    "lat": 22.745003,
-    "lon": 88.38239,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Rekjuani Mouza",
-    "aqi": 72.0,
-    "lat": 22.629488,
-    "lon": 88.481436,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Donnagar Mouza",
-    "aqi": 69.0,
-    "lat": 22.663128,
-    "lon": 88.453942,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Fortis Hospital",
-    "aqi": 73.0,
-    "lat": 22.52067,
-    "lon": 88.401204,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Rishra Municipality",
-    "aqi": 82.0,
-    "lat": 22.727676,
-    "lon": 88.344182,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Rabindra Bharati University, Kolkata, India",
-    "aqi": 37.0,
-    "lat": 22.627847,
-    "lon": 88.380669,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "New Town Kolkata Development Authority (A-1)- HIDCO",
-    "aqi": 76.0,
-    "lat": 22.61075,
-    "lon": 88.471695,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bilkanda G.P.(Muragachha)",
-    "aqi": 83.0,
-    "lat": 22.696295,
-    "lon": 88.4226517,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Jhorhat Mouza",
-    "aqi": 81.0,
-    "lat": 22.57907,
-    "lon": 88.236258,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Howrah Municipal Office",
-    "aqi": 79.0,
-    "lat": 22.584017,
-    "lon": 88.33476,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bilkanda G.P. (Chandpur)",
-    "aqi": 85.0,
-    "lat": 22.6870617,
-    "lon": 88.4258383,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Icchapur Nilganj, (Taldhoria)",
-    "aqi": 81.0,
-    "lat": 22.708953,
-    "lon": 88.438222,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bally G.P.",
-    "aqi": 71.0,
-    "lat": 22.642002,
-    "lon": 88.338262,
+    "lat": 22.526701,
+    "lon": 88.36321,
     "station_id": "waqi_unknown"
   },
   {
     "name": "Dasnagar, Howrah",
-    "aqi": 81.0,
+    "aqi": 162.0,
     "lat": 22.6025571,
     "lon": 88.3105664,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Kuberpur Mouza",
-    "aqi": 96.0,
-    "lat": 22.704908,
-    "lon": 88.523177,
+    "name": "Electrosteel Casting Limited",
+    "aqi": 74.0,
+    "lat": 22.716265,
+    "lon": 88.3744,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Karana Madhabpur",
-    "aqi": 75.0,
-    "lat": 22.71515,
-    "lon": 88.420108,
+    "name": "Bandipur G.P, (Iswaripur)",
+    "aqi": 84.0,
+    "lat": 22.7358,
+    "lon": 88.4102,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Pashchim Khilkapur, (Maynagadi)",
-    "aqi": 92.0,
-    "lat": 22.742294,
-    "lon": 88.484347,
+    "name": "Jadavpur University",
+    "aqi": 65.0,
+    "lat": 22.501592,
+    "lon": 88.371607,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Ghusuri, Howrah, India",
-    "aqi": 76.0,
-    "lat": 22.611968,
-    "lon": 88.347422,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Avidipta Housing Complex",
-    "aqi": 67.0,
-    "lat": 22.493217,
-    "lon": 88.39831,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Rajpur-Sonarpur Municipality",
-    "aqi": 81.0,
-    "lat": 22.4163133,
-    "lon": 88.4158367,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Banipur -I G.P",
-    "aqi": 72.0,
-    "lat": 22.563995,
-    "lon": 88.234141,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Chandigarh Rohanda (Banaspol)",
-    "aqi": 71.0,
-    "lat": 22.674821,
-    "lon": 88.492298,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Eksara Mouza",
-    "aqi": 80.0,
-    "lat": 22.63026,
-    "lon": 88.290811,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "BL Saha Road",
-    "aqi": 111.0,
-    "lat": 22.6803984,
-    "lon": 88.4457511,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Nabagram Colony Mouza",
-    "aqi": 68.0,
-    "lat": 22.703799,
-    "lon": 88.342007,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Dankuni Municipality",
-    "aqi": 73.0,
-    "lat": 22.6817158,
-    "lon": 88.2948667,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bidhannagar, Kolkata, India",
-    "aqi": 42.0,
-    "lat": 22.58157048,
-    "lon": 88.41002457,
+    "name": "Ballygunge, Kolkata, India",
+    "aqi": 27.0,
+    "lat": 22.5367507,
+    "lon": 88.3638022,
     "station_id": "waqi_unknown"
   },
   {
     "name": "Budge Budge Institute of Technology",
-    "aqi": 74.0,
+    "aqi": 71.0,
     "lat": 22.4588161,
     "lon": 88.1683649,
     "station_id": "waqi_unknown"
   },
   {
+    "name": "New Town Kolkata Development Authority (A-1)- HIDCO",
+    "aqi": 70.0,
+    "lat": 22.61075,
+    "lon": 88.471695,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Ghoramara Mouza",
+    "aqi": 85.0,
+    "lat": 22.736987,
+    "lon": 88.33141,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bidhannagar, Kolkata, India",
+    "aqi": 45.0,
+    "lat": 22.58157048,
+    "lon": 88.41002457,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "St. Xavier's university",
+    "aqi": 71.0,
+    "lat": 22.561963,
+    "lon": 88.487988,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Urbana Housing Complex",
+    "aqi": 71.0,
+    "lat": 22.511385,
+    "lon": 88.412384,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "BL Saha Road",
+    "aqi": 100.0,
+    "lat": 22.6803984,
+    "lon": 88.4457511,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Jugberia Mouza ",
+    "aqi": 75.0,
+    "lat": 22.698808,
+    "lon": 88.427658,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Paschim Khilkapur G.P. (Chaturia)",
+    "aqi": 72.0,
+    "lat": 22.741285,
+    "lon": 88.4726313,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bilkanda G.P.( Mahispota)",
+    "aqi": 77.0,
+    "lat": 22.7080083,
+    "lon": 88.4162083,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Titagarh Municipality",
+    "aqi": 73.0,
+    "lat": 22.737385,
+    "lon": 88.372624,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "ChotoJagulia G.P, (Bazitpur )",
+    "aqi": 81.0,
+    "lat": 22.7410077,
+    "lon": 88.4994019,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Leather Complex",
+    "aqi": 111.0,
+    "lat": 22.4953,
+    "lon": 88.509293,
+    "station_id": "waqi_unknown"
+  },
+  {
     "name": "Bamanghata G.P",
-    "aqi": 99.0,
+    "aqi": 82.0,
     "lat": 22.5197963,
     "lon": 88.466187,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Sarenga G.P",
+    "name": "Presidency University",
+    "aqi": 75.0,
+    "lat": 22.5763855,
+    "lon": 88.3610445,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Howrah Municipal Office",
+    "aqi": 75.0,
+    "lat": 22.584017,
+    "lon": 88.33476,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Kayemba Mouza",
+    "aqi": 70.0,
+    "lat": 22.676111,
+    "lon": 88.527181,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Kuberpur Mouza",
+    "aqi": 82.0,
+    "lat": 22.704908,
+    "lon": 88.523177,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Choto Jagulia G.P. (Bamungachi)",
+    "aqi": 80.0,
+    "lat": 22.7462,
+    "lon": 88.520421,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Banipur -I G.P",
+    "aqi": 69.0,
+    "lat": 22.563995,
+    "lon": 88.234141,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Sankrail Mouza",
+    "aqi": 77.0,
+    "lat": 22.55856,
+    "lon": 88.20847,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Victoria, Kolkata, India",
+    "aqi": 61.0,
+    "lat": 22.5448082,
+    "lon": 88.3403691,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Deara Mouza",
+    "aqi": 67.0,
+    "lat": 22.637903,
+    "lon": 88.48252,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Anandanagar Panchayat",
+    "aqi": 77.0,
+    "lat": 22.618873,
+    "lon": 88.321871,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Barasat Goverment College",
+    "aqi": 63.0,
+    "lat": 22.7173468,
+    "lon": 88.4783074,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Dankuni Municipality",
+    "aqi": 69.0,
+    "lat": 22.6817158,
+    "lon": 88.2948667,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Domjur BDO",
+    "aqi": 75.0,
+    "lat": 22.627258,
+    "lon": 88.232762,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Avidipta Housing Complex",
+    "aqi": 64.0,
+    "lat": 22.493217,
+    "lon": 88.39831,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "VIVEKANANDA COLLEGE FOR WOMEN, BARISHA",
+    "aqi": 65.0,
+    "lat": 22.4885267,
+    "lon": 88.3141944,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Rohanda Mouza",
     "aqi": 76.0,
-    "lat": 22.532842,
-    "lon": 88.218128,
+    "lat": 22.657114,
+    "lon": 88.483175,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Maulana Azad Collage",
-    "aqi": 74.0,
-    "lat": 22.560925,
-    "lon": 88.358155,
+    "name": "Bally G.P.",
+    "aqi": 69.0,
+    "lat": 22.642002,
+    "lon": 88.338262,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Rishra Mouza",
-    "aqi": 95.0,
-    "lat": 22.715411,
-    "lon": 88.332856,
+    "name": "Karana Madhabpur",
+    "aqi": 71.0,
+    "lat": 22.71515,
+    "lon": 88.420108,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Bandipur G.P, (Iswaripur)",
-    "aqi": 89.0,
-    "lat": 22.7358,
-    "lon": 88.4102,
+    "name": "Nabagram Colony Mouza",
+    "aqi": 67.0,
+    "lat": 22.703799,
+    "lon": 88.342007,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Old Calcutta Road Checkpost",
+    "aqi": 159.0,
+    "lat": 22.745003,
+    "lon": 88.38239,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Ghusuri, Howrah, India",
+    "aqi": 108.0,
+    "lat": 22.611968,
+    "lon": 88.347422,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bethune College",
+    "aqi": 68.0,
+    "lat": 22.58851,
+    "lon": 88.367807,
     "station_id": "waqi_unknown"
   },
   {
@@ -371,332 +315,367 @@
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Victoria, Kolkata, India",
-    "aqi": 78.0,
-    "lat": 22.5448082,
-    "lon": 88.3403691,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "VIVEKANANDA COLLEGE FOR WOMEN, BARISHA",
-    "aqi": 68.0,
-    "lat": 22.4885267,
-    "lon": 88.3141944,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "National Atlas Bhaban",
-    "aqi": 69.0,
-    "lat": 22.5705348,
-    "lon": 88.430926,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Choto Jagulia G.P. (Bamungachi)",
-    "aqi": 97.0,
-    "lat": 22.7462,
-    "lon": 88.520421,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "North Dumdum Municipality",
-    "aqi": 74.0,
-    "lat": 22.6705117,
-    "lon": 88.43389,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Rohanda Mouza",
-    "aqi": 86.0,
-    "lat": 22.657114,
-    "lon": 88.483175,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Flora Fountain",
-    "aqi": 74.0,
-    "lat": 22.548628,
-    "lon": 88.382256,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Ballygunge Campus, C.U",
-    "aqi": 73.0,
-    "lat": 22.526701,
-    "lon": 88.36321,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Dhapa Lock Pumping Station ",
-    "aqi": 83.0,
-    "lat": 22.558027,
-    "lon": 88.40998,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "WBPCB Office, Saltlake",
-    "aqi": 78.0,
-    "lat": 22.562212,
-    "lon": 88.409355,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Presidency University",
-    "aqi": 85.0,
-    "lat": 22.5763855,
-    "lon": 88.3610445,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Hatgachha Mouza",
-    "aqi": 71.0,
-    "lat": 22.56526,
-    "lon": 88.242414,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Asutosh 2nd Campus",
-    "aqi": 72.0,
-    "lat": 22.405838,
-    "lon": 88.278563,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Barasat 2 BDO Office",
-    "aqi": 86.0,
-    "lat": 22.666625,
-    "lon": 88.530707,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Urbana Housing Complex",
-    "aqi": 77.0,
-    "lat": 22.511385,
-    "lon": 88.412384,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bandipur GP, Doperia",
-    "aqi": 84.0,
-    "lat": 22.72072,
-    "lon": 88.41033,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Sankrail Mouza",
-    "aqi": 82.0,
-    "lat": 22.55856,
-    "lon": 88.20847,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bhairab Ganguly College",
-    "aqi": 72.0,
-    "lat": 22.6596117,
-    "lon": 88.3803253,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Choto Jaguliya Mouza",
-    "aqi": 83.0,
-    "lat": 22.749647,
-    "lon": 88.512332,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Office of The Assistant Commissioner of Police, Belghoria",
-    "aqi": 68.0,
-    "lat": 22.690975,
-    "lon": 88.375572,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bilkanda G.P.(Tegharia)",
-    "aqi": 71.0,
-    "lat": 22.693545,
-    "lon": 88.412168,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bilkanda G.P.( Mahispota)",
-    "aqi": 79.0,
-    "lat": 22.7080083,
-    "lon": 88.4162083,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Kachua Mouza",
-    "aqi": 93.0,
-    "lat": 22.665893,
-    "lon": 88.511211,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Botanical Garden, Howrah",
-    "aqi": 66.0,
-    "lat": 22.554954,
-    "lon": 88.292568,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Khalia mouza",
-    "aqi": 79.0,
-    "lat": 22.62328,
-    "lon": 88.294286,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Deara Mouza",
-    "aqi": 76.0,
-    "lat": 22.637903,
-    "lon": 88.48252,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bethune College",
-    "aqi": 73.0,
-    "lat": 22.58851,
-    "lon": 88.367807,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Bally Municipality",
-    "aqi": 70.0,
-    "lat": 22.6474767,
-    "lon": 88.3509999,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Barasat Goverment College",
-    "aqi": 67.0,
-    "lat": 22.7173468,
-    "lon": 88.4783074,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Jugberia Mouza ",
-    "aqi": 98.0,
-    "lat": 22.698808,
-    "lon": 88.427658,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Sarsuna College",
-    "aqi": 71.0,
-    "lat": 22.48127,
-    "lon": 88.284554,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Leather Complex",
-    "aqi": 125.0,
-    "lat": 22.4953,
-    "lon": 88.509293,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Sector V Industrial Township Authority, Nabadiganta Bhavan",
-    "aqi": 81.0,
-    "lat": 22.576099,
-    "lon": 88.434296,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "ChotoJagulia G.P, (Bazitpur )",
-    "aqi": 95.0,
-    "lat": 22.7410077,
-    "lon": 88.4994019,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Kamranga",
-    "aqi": 87.0,
-    "lat": 22.574064,
-    "lon": 88.239564,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "St. Xavier's university",
-    "aqi": 79.0,
-    "lat": 22.561963,
-    "lon": 88.487988,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "New Acharya Prafulla Chandra College",
-    "aqi": 70.0,
-    "lat": 22.697426,
-    "lon": 88.437801,
-    "station_id": "waqi_unknown"
-  },
-  {
-    "name": "Icchapur Nilganj, (Kapasia)",
-    "aqi": 75.0,
-    "lat": 22.714498,
-    "lon": 88.434732,
-    "station_id": "waqi_unknown"
-  },
-  {
     "name": "Padmapukur, Howrah, India",
-    "aqi": 63.0,
+    "aqi": 43.0,
     "lat": 22.5687319,
     "lon": 88.2797276,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Ballygunge, Kolkata, India",
-    "aqi": 56.0,
-    "lat": 22.5367507,
-    "lon": 88.3638022,
+    "name": "Rekjuani Mouza",
+    "aqi": 67.0,
+    "lat": 22.629488,
+    "lon": 88.481436,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Pujali Municipality",
-    "aqi": 82.0,
-    "lat": 22.4683367,
-    "lon": 88.1516133,
+    "name": "New Acharya Prafulla Chandra College",
+    "aqi": 66.0,
+    "lat": 22.697426,
+    "lon": 88.437801,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Lady Brabourne College",
-    "aqi": 73.0,
-    "lat": 22.5451541,
-    "lon": 88.3673286,
+    "name": "Office of The Assistant Commissioner of Police, Belghoria",
+    "aqi": 66.0,
+    "lat": 22.690975,
+    "lon": 88.375572,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "New Barrackpore Municipality",
-    "aqi": 71.0,
-    "lat": 22.6910283,
-    "lon": 88.4466683,
+    "name": "Bandipur GP, Doperia",
+    "aqi": 83.0,
+    "lat": 22.72072,
+    "lon": 88.41033,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "West Bengal State University",
-    "aqi": 75.0,
-    "lat": 22.738529,
-    "lon": 88.435593,
+    "name": "Choto Jaguliya Mouza",
+    "aqi": 74.0,
+    "lat": 22.749647,
+    "lon": 88.512332,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Maheshtala Municipality",
-    "aqi": 91.0,
-    "lat": 22.499561,
-    "lon": 88.231133,
+    "name": "Fort William, Kolkata, India",
+    "aqi": 35.0,
+    "lat": 22.55664,
+    "lon": 88.342674,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Rabindra Bharati University, Kolkata, India",
+    "aqi": 22.0,
+    "lat": 22.627847,
+    "lon": 88.380669,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Sarsuna College",
+    "aqi": 69.0,
+    "lat": 22.48127,
+    "lon": 88.284554,
     "station_id": "waqi_unknown"
   },
   {
     "name": "Patharghata G.P ",
-    "aqi": 81.0,
+    "aqi": 80.0,
     "lat": 22.567703,
     "lon": 88.501182,
     "station_id": "waqi_unknown"
   },
   {
-    "name": "Rajarhat BLRO Office ",
+    "name": "Botanical Garden, Howrah",
+    "aqi": 60.0,
+    "lat": 22.554954,
+    "lon": 88.292568,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Kamarhati Municipality",
+    "aqi": 83.0,
+    "lat": 22.662251,
+    "lon": 88.379349,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Salap-II",
+    "aqi": 74.0,
+    "lat": 22.605708,
+    "lon": 88.257118,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "West Bengal State University",
+    "aqi": 72.0,
+    "lat": 22.738529,
+    "lon": 88.435593,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Sector V Industrial Township Authority, Nabadiganta Bhavan",
     "aqi": 73.0,
+    "lat": 22.576099,
+    "lon": 88.434296,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Donnagar Mouza",
+    "aqi": 65.0,
+    "lat": 22.663128,
+    "lon": 88.453942,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Fortis Hospital",
+    "aqi": 67.0,
+    "lat": 22.52067,
+    "lon": 88.401204,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Rajarhat BLRO Office ",
+    "aqi": 71.0,
     "lat": 22.628053,
     "lon": 88.4877662,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Flora Fountain",
+    "aqi": 68.0,
+    "lat": 22.548628,
+    "lon": 88.382256,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bilkanda G.P.(Tegharia)",
+    "aqi": 68.0,
+    "lat": 22.693545,
+    "lon": 88.412168,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Rishra Mouza",
+    "aqi": 90.0,
+    "lat": 22.715411,
+    "lon": 88.332856,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bhairab Ganguly College",
+    "aqi": 70.0,
+    "lat": 22.6596117,
+    "lon": 88.3803253,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Rabindra Sarobar, Kolkata, India",
+    "aqi": 32.0,
+    "lat": 22.51106,
+    "lon": 88.35142,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bagberia Mouza",
+    "aqi": 82.0,
+    "lat": 22.674252,
+    "lon": 88.515692,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Chandigarh Rohanda (Banaspol)",
+    "aqi": 66.0,
+    "lat": 22.674821,
+    "lon": 88.492298,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "WBPCB Office, Saltlake",
+    "aqi": 69.0,
+    "lat": 22.562212,
+    "lon": 88.409355,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Lady Brabourne College",
+    "aqi": 68.0,
+    "lat": 22.5451541,
+    "lon": 88.3673286,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Maulana Azad Collage",
+    "aqi": 69.0,
+    "lat": 22.560925,
+    "lon": 88.358155,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Hatgachha Mouza",
+    "aqi": 69.0,
+    "lat": 22.56526,
+    "lon": 88.242414,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Khalia mouza",
+    "aqi": 77.0,
+    "lat": 22.62328,
+    "lon": 88.294286,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Icchapur Nilganj, (Taldhoria)",
+    "aqi": 78.0,
+    "lat": 22.708953,
+    "lon": 88.438222,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Rishra Municipality",
+    "aqi": 80.0,
+    "lat": 22.727676,
+    "lon": 88.344182,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Barasat 2 BDO Office",
+    "aqi": 73.0,
+    "lat": 22.666625,
+    "lon": 88.530707,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Eksara Mouza",
+    "aqi": 73.0,
+    "lat": 22.63026,
+    "lon": 88.290811,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Sarenga G.P",
+    "aqi": 72.0,
+    "lat": 22.532842,
+    "lon": 88.218128,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Jhorhat Mouza",
+    "aqi": 78.0,
+    "lat": 22.57907,
+    "lon": 88.236258,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Kachua Mouza",
+    "aqi": 77.0,
+    "lat": 22.665893,
+    "lon": 88.511211,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "New Barrackpore Municipality",
+    "aqi": 67.0,
+    "lat": 22.6910283,
+    "lon": 88.4466683,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bilkanda G.P.(Muragachha)",
+    "aqi": 78.0,
+    "lat": 22.696295,
+    "lon": 88.4226517,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Icchapur Nilganj, (Kapasia)",
+    "aqi": 73.0,
+    "lat": 22.714498,
+    "lon": 88.434732,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Pashchim Khilkapur, (Maynagadi)",
+    "aqi": 79.0,
+    "lat": 22.742294,
+    "lon": 88.484347,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Asutosh 2nd Campus",
+    "aqi": 83.0,
+    "lat": 22.405838,
+    "lon": 88.278563,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "National Atlas Bhaban",
+    "aqi": 64.0,
+    "lat": 22.5705348,
+    "lon": 88.430926,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Lorreto College",
+    "aqi": 66.0,
+    "lat": 22.549372,
+    "lon": 88.35171,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Dhapa Lock Pumping Station ",
+    "aqi": 72.0,
+    "lat": 22.558027,
+    "lon": 88.40998,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bally Municipality",
+    "aqi": 67.0,
+    "lat": 22.6474767,
+    "lon": 88.3509999,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bilkanda G.P. (Chandpur)",
+    "aqi": 77.0,
+    "lat": 22.6870617,
+    "lon": 88.4258383,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Belur Math, Howrah, India",
+    "aqi": 51.0,
+    "lat": 22.629801,
+    "lon": 88.352017,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Karunamoye Bus Stand",
+    "aqi": 61.0,
+    "lat": 22.587029,
+    "lon": 88.42074,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "East Calcutta Girls College, Lake Town",
+    "aqi": 102.0,
+    "lat": 22.601583,
+    "lon": 88.404556,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Kanaipur G.P",
+    "aqi": 78.0,
+    "lat": 22.702348,
+    "lon": 88.321033,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Kamranga",
+    "aqi": 84.0,
+    "lat": 22.574064,
+    "lon": 88.239564,
     "station_id": "waqi_unknown"
   }
 ]

@@ -1,26 +1,24 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pickle
-import osmnx as ox
 import os
-from dummy_aqi_interpolator import DummyAQIInterpolator
-from real_aqi_fetcher import RealAQIFetcher
+from aqi_service import AQIInterpolator
 from simple_router import SimplePollutionRouter
- 
+
 app = Flask(__name__)
 CORS(app)
- 
+
 # Global variables
 graph = None
 interpolator = None
 router = None
-data_source = os.environ.get('DATA_SOURCE', 'dummy')  # 'dummy' or 'real'
- 
+data_source = "real"  # Production: Always use real WAQI data
+
 def initialize_system():
-    """Initialize system with dummy or real AQI data"""
+    """Initialize system with REAL WAQI AQI data"""
     global graph, interpolator, router, data_source
     
-    print(f"Initializing Kolkata AQI Routing System with {data_source.upper()} data...")
+    print("Initializing Kolkata AQI Routing System with REAL WAQI data...")
     
     # Load network
     try:
@@ -31,48 +29,30 @@ def initialize_system():
         print("Network not found. Run basic_network.py first!")
         return False
     
-    # Initialize interpolator based on data source
-    if data_source == 'real':
-        # Use real WAQI data
-        print("Fetching real AQI data from WAQI API...")
-        fetcher = RealAQIFetcher(api_type='waqi')
+    # Initialize AQI service with real WAQI data
+    try:
+        print("Initializing AQI service with real WAQI data...")
+        interpolator = AQIInterpolator()
         
-        # Try to load cached real stations first
-        if os.path.exists('kolkata_real_stations.json'):
-            print("Loading cached real stations...")
-            stations = fetcher.load_stations()
-        else:
-            # Fetch fresh data
-            stations = fetcher.fetch_stations()
-            if stations:
-                fetcher.save_stations(stations)
+        # Show station info
+        station_info = interpolator.get_station_info()
+        print(f"Using {station_info['total_stations']} REAL AQI stations from WAQI")
+        print(f"AQI range: {station_info['aqi_range'][0]:.1f} - {station_info['aqi_range'][1]:.1f}")
+        print(f"Average AQI: {station_info['average_aqi']:.1f}")
         
-        if not stations:
-            print("Failed to fetch real stations. Falling back to dummy data...")
-            interpolator = DummyAQIInterpolator()
-            data_source = 'dummy'
-        else:
-            # Create interpolator with real stations
-            interpolator = DummyAQIInterpolator()
-            interpolator.stations = stations
-            print(f"Using {len(stations)} real AQI stations from WAQI")
-    else:
-        # Use dummy data
-        interpolator = DummyAQIInterpolator()
-        
-        if not interpolator.stations:
-            print("No dummy stations found. Run dummy_aqi_generator.py first!")
-            return False
-    
-    # Show station info
-    station_info = interpolator.get_station_info()
-    print(f"Using {station_info['total_stations']} AQI stations")
-    print(f"AQI range: {station_info['aqi_range'][0]:.1f} - {station_info['aqi_range'][1]:.1f}")
+    except Exception as e:
+        print(f"✗ Failed to initialize AQI service: {e}")
+        print("ERROR: Cannot start server without real WAQI data")
+        print("Please check:")
+        print("  1. WAQI token is set in waqi_token.txt or WAQI_TOKEN environment variable")
+        print("  2. Internet connection is available")
+        print("  3. WAQI API is accessible")
+        return False
     
     # Initialize router
     router = SimplePollutionRouter(graph, interpolator)
     
-    print("System initialized successfully!")
+    print("✓ System initialized successfully with REAL WAQI data!")
     return True
  
 @app.route('/')
@@ -81,22 +61,25 @@ def home():
  
 @app.route('/stations')
 def get_stations():
-    """Get all AQI stations"""
+    """Get all REAL AQI stations from WAQI"""
     if not interpolator:
         return jsonify({'error': 'System not initialized'}), 500
     
-    station_info = interpolator.get_station_info()
-    return jsonify({
-        'stations': station_info['stations'],
-        'total_stations': station_info['total_stations'],
-        'aqi_range': station_info['aqi_range'],
-        'average_aqi': station_info['average_aqi'],
-        'data_source': data_source
-    })
- 
+    try:
+        station_info = interpolator.get_station_info()
+        return jsonify({
+            'stations': station_info['stations'],
+            'total_stations': station_info['total_stations'],
+            'aqi_range': station_info['aqi_range'],
+            'average_aqi': station_info['average_aqi'],
+            'data_source': 'real'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to get stations: {str(e)}'}), 500
+
 @app.route('/routes/clean')
 def get_clean_route():
-    """Get cleanest route between two points"""
+    """Get cleanest route between two points using REAL WAQI data"""
     try:
         start_lat = float(request.args.get('start_lat'))
         start_lon = float(request.args.get('start_lon'))
@@ -147,33 +130,35 @@ def get_clean_route():
                 )
             },
             'status': 'success',
-            'data_source': data_source
+            'data_source': 'real'
         })
         
     except Exception as e:
+        print(f"Error calculating route: {e}")
         return jsonify({'error': str(e)}), 500
- 
+
 @app.route('/test')
 def test_system():
     """Test system with sample coordinates"""
-    # Test route: Howrah to Salt Lake (using dummy data)
+    # Test route: Howrah to Salt Lake (using real data)
     return get_clean_route()
- 
+
 if __name__ == '__main__':
     if initialize_system():
-        print(f"Starting {data_source.upper()} data API server on http://localhost:5002")
+        print("\nStarting REAL WAQI Data API server on http://localhost:5002")
+        print("=" * 60)
         print("Test endpoints:")
         print("  http://localhost:5002/")
         print("  http://localhost:5002/stations")
         print("  http://localhost:5002/test")
         print("  http://localhost:5002/routes/clean?start_lat=22.5750&start_lon=88.3500&end_lat=22.5800&end_lon=88.3800")
-        print(f"\nTo use REAL WAQI data:")
-        print("  1. Confirm your email: https://aqicn.org/data-platform/token-confirm/ef18ef73-d35b-4d6a-a492-0bbea7429548")
-        print("  2. Get your token from the confirmation page")
-        print("  3. Set WAQI_TOKEN environment variable or create waqi_token.txt")
-        print("  4. Set DATA_SOURCE=real environment variable")
-        print("  5. Restart the server")
+        print("=" * 60)
+        print("✓ Using REAL WAQI AQI data only")
+        print("✓ No dummy data fallback")
+        print("=" * 60)
         
         app.run(debug=True, host='0.0.0.0', port=5002)
     else:
-        print("Failed to initialize system")
+        print("\n✗ Failed to initialize system")
+        print("Cannot start server without real WAQI data")
+        exit(1)
