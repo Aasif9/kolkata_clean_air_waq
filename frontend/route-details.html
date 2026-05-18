@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Details - Clean Air Routes</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/map.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        .route-details-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .route-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .route-section h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .clean-route-header {
+            color: #2ecc71;
+        }
+        
+        .fast-route-header {
+            color: #e74c3c;
+        }
+        
+        .route-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .waypoints-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        
+        .waypoint-item {
+            display: grid;
+            grid-template-columns: 50px 1fr 1fr 80px;
+            gap: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        
+        .waypoint-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .waypoint-index {
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .waypoint-coords {
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .waypoint-aqi {
+            font-weight: bold;
+            text-align: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+        }
+        
+        .aqi-good { background: #2ecc71; }
+        .aqi-moderate { background: #f39c12; }
+        .aqi-unhealthy { background: #e67e22; }
+        .aqi-very-unhealthy { background: #e74c3c; }
+        
+        .comparison-section {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .comparison-item {
+            text-align: center;
+        }
+        
+        .comparison-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: #333;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .back-button:hover {
+            background: #555;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.close()">
+        <i class="fas fa-times"></i> Close
+    </button>
+    
+    <div class="header">
+        <h1><i class="fas fa-route"></i> Route Details</h1>
+        <p>Complete breakdown of clean and fast routes</p>
+    </div>
+    
+    <div id="routeDetails" class="route-details-container">
+        <div class="no-data">
+            <i class="fas fa-spinner fa-spin"></i> Loading route data...
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Load route data from sessionStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const routeData = JSON.parse(sessionStorage.getItem('routeData'));
+            
+            if (!routeData) {
+                document.getElementById('routeDetails').innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>No route data available. Please calculate routes first.</p>
+                        <button onclick="window.close()" style="margin-top: 20px; padding: 10px 20px; cursor: pointer;">Close</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            displayRouteDetails(routeData);
+        });
+        
+        function displayRouteDetails(data) {
+            const container = document.getElementById('routeDetails');
+            
+            const cleanRoute = data.clean_route;
+            const fastRoute = data.fast_route;
+            const comparison = data.comparison;
+            
+            container.innerHTML = `
+                <!-- Clean Route Section -->
+                <div class="route-section">
+                    <h2 class="clean-route-header">
+                        <i class="fas fa-leaf"></i> Clean Route
+                    </h2>
+                    
+                    <div class="route-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Total Distance</div>
+                            <div class="stat-value">${Utils.formatDistance(cleanRoute.analysis.total_distance_km)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Travel Time</div>
+                            <div class="stat-value">${cleanRoute.analysis.total_travel_time_min.toFixed(1)} min</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Average AQI</div>
+                            <div class="stat-value">${cleanRoute.analysis.average_aqi.toFixed(1)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Pollution Exposure</div>
+                            <div class="stat-value">${cleanRoute.analysis.pollution_exposure.toFixed(1)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Min AQI</div>
+                            <div class="stat-value">${cleanRoute.analysis.min_aqi.toFixed(1)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Max AQI</div>
+                            <div class="stat-value">${cleanRoute.analysis.max_aqi.toFixed(1)}</div>
+                        </div>
+                    </div>
+                    
+                    <h3>Waypoints (${cleanRoute.waypoints.length})</h3>
+                    <div class="waypoints-container">
+                        ${cleanRoute.waypoints.map((wp, index) => {
+                            const category = Utils.getAQICategory(wp.aqi);
+                            return `
+                                <div class="waypoint-item">
+                                    <div class="waypoint-index">${index + 1}</div>
+                                    <div class="waypoint-coords">${wp.lat.toFixed(6)}, ${wp.lon.toFixed(6)}</div>
+                                    <div class="waypoint-coords">AQI: ${wp.aqi.toFixed(2)}</div>
+                                    <div class="waypoint-aqi aqi-${category}">${wp.aqi.toFixed(1)}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+                
+                <!-- Fast Route Section -->
+                <div class="route-section">
+                    <h2 class="fast-route-header">
+                        <i class="fas fa-bolt"></i> Fast Route
+                    </h2>
+                    
+                    <div class="route-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Total Distance</div>
+                            <div class="stat-value">${Utils.formatDistance(fastRoute.analysis.total_distance_km)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Travel Time</div>
+                            <div class="stat-value">${fastRoute.analysis.total_travel_time_min.toFixed(1)} min</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Average AQI</div>
+                            <div class="stat-value">${fastRoute.analysis.average_aqi.toFixed(1)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Pollution Exposure</div>
+                            <div class="stat-value">${fastRoute.analysis.pollution_exposure.toFixed(1)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Min AQI</div>
+                            <div class="stat-value">${fastRoute.analysis.min_aqi.toFixed(1)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Max AQI</div>
+                            <div class="stat-value">${fastRoute.analysis.max_aqi.toFixed(1)}</div>
+                        </div>
+                    </div>
+                    
+                    <h3>Coordinates (${fastRoute.coordinates.length})</h3>
+                    <div class="waypoints-container">
+                        ${fastRoute.coordinates.map((coord, index) => {
+                            return `
+                                <div class="waypoint-item">
+                                    <div class="waypoint-index">${index + 1}</div>
+                                    <div class="waypoint-coords">${coord[0].toFixed(6)}, ${coord[1].toFixed(6)}</div>
+                                    <div class="waypoint-coords">Lat, Lon</div>
+                                    <div class="waypoint-aqi aqi-good">--</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+                
+                <!-- Comparison Section -->
+                <div class="comparison-section">
+                    <h2><i class="fas fa-balance-scale"></i> Route Comparison</h2>
+                    <div class="comparison-grid">
+                        <div class="comparison-item">
+                            <div class="stat-label">Distance Increase</div>
+                            <div class="comparison-value">${comparison.distance_increase_percent.toFixed(1)}%</div>
+                            <div>Clean route is longer</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="stat-label">AQI Improvement</div>
+                            <div class="comparison-value">${comparison.aqi_improvement.toFixed(1)}</div>
+                            <div>Clean route is better</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="stat-label">Recommendation</div>
+                            <div class="comparison-value" style="font-size: 16px;">
+                                ${getRecommendation(comparison)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getRecommendation(comparison) {
+            const extraDistance = comparison.distance_increase_percent;
+            const aqiImprovement = comparison.aqi_improvement;
+            
+            if (extraDistance < 5 && aqiImprovement > 10) {
+                return '✓ Clean route recommended';
+            }
+            
+            if (extraDistance > 20 && aqiImprovement < 5) {
+                return '→ Fast route recommended';
+            }
+            
+            if (extraDistance < 10 && aqiImprovement > 5) {
+                return '✓ Clean route recommended';
+            }
+            
+            if (extraDistance > 15) {
+                return '→ Fast route recommended';
+            }
+            
+            return '⚖ Both routes reasonable';
+        }
+    </script>
+</body>
+</html>
