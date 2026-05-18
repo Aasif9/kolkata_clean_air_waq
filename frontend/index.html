@@ -88,6 +88,9 @@
                     <button class="btn btn-primary" id="calculateBtn">
                         <i class="fas fa-calculator"></i> Calculate Routes
                     </button>
+                    <button class="btn btn-secondary" id="viewEndpointsBtn">
+                        <i class="fas fa-list"></i> View Route Details
+                    </button>
                 </div>
             </div>
  
@@ -107,56 +110,25 @@
                 </div>
             </div>
  
-            <!-- Route Comparison -->
+            <!-- Clean Route List -->
             <div class="panel-section">
-                <h3><i class="fas fa-balance-scale"></i> Route Comparison</h3>
-                <div class="route-comparison" id="routeComparison">
-                    <div class="route-card fast-route" id="fastRouteCard">
-                        <h4><i class="fas fa-tachometer-alt"></i> Fastest Route</h4>
-                        <div class="route-stats">
-                            <div class="stat">
-                                <span class="stat-label">Distance</span>
-                                <span class="stat-value" id="fastDistance">--</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Avg AQI</span>
-                                <span class="stat-value" id="fastAQI">--</span>
-                            </div>
-                        </div>
-                        <button class="route-btn" id="showFastBtn">Show Route</button>
+                <h3><i class="fas fa-route"></i> Clean Route Details</h3>
+                <div class="route-summary" id="routeSummary">
+                    <div class="summary-item">
+                        <span class="summary-label">Total Distance:</span>
+                        <span class="summary-value" id="cleanDistance">--</span>
                     </div>
-                    
-                    <div class="route-card clean-route" id="cleanRouteCard">
-                        <h4><i class="fas fa-leaf"></i> Clean Route</h4>
-                        <div class="route-stats">
-                            <div class="stat">
-                                <span class="stat-label">Distance</span>
-                                <span class="stat-value" id="cleanDistance">--</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Avg AQI</span>
-                                <span class="stat-value" id="cleanAQI">--</span>
-                            </div>
-                        </div>
-                        <button class="route-btn" id="showCleanBtn">Show Route</button>
+                    <div class="summary-item">
+                        <span class="summary-label">Average AQI:</span>
+                        <span class="summary-value" id="cleanAQI">--</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">AQI Exposure:</span>
+                        <span class="summary-value" id="cleanExposure">--</span>
                     </div>
                 </div>
-                
-                <!-- Comparison Summary -->
-                <div class="comparison-summary" id="comparisonSummary">
-                    <h4>Trade-off Analysis</h4>
-                    <div class="trade-off-item">
-                        <span>Extra Distance:</span>
-                        <span id="extraDistance">--</span>
-                    </div>
-                    <div class="trade-off-item">
-                        <span>AQI Improvement:</span>
-                        <span id="aqiImprovement">--</span>
-                    </div>
-                    <div class="recommendation" id="recommendation">
-                        <i class="fas fa-lightbulb"></i>
-                        <span id="recommendationText">Select start and end points to see recommendations</span>
-                    </div>
+                <div class="waypoints-list" id="waypointsList">
+                    <div class="loading">Calculate a route to see waypoints</div>
                 </div>
             </div>
  
@@ -182,8 +154,28 @@
                     </div>
                     <div class="status-item">
                         <span>Data Source:</span>
-                        <span class="status-value">Dummy Test Data</span>
+                        <span class="status-value">Real WAQI Data</span>
                     </div>
+                </div>
+            </div>
+
+            <!-- Saved Routes -->
+            <div class="panel-section">
+                <h3><i class="fas fa-history"></i> Saved Routes</h3>
+                <div class="storage-controls">
+                    <button class="btn btn-small" id="refreshSavedBtn">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                    <button class="btn btn-small" id="exportRoutesBtn">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="btn btn-small" id="importRoutesBtn">
+                        <i class="fas fa-upload"></i> Import
+                    </button>
+                    <input type="file" id="importFileInput" accept=".json" style="display: none;">
+                </div>
+                <div class="routes-history" id="routesHistory">
+                    <div class="loading">Loading saved routes...</div>
                 </div>
             </div>
         </div>
@@ -210,6 +202,7 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/storage.js"></script>
     <script src="js/map.js"></script>
     <script src="js/app.js"></script>
 </body>

@@ -119,7 +119,19 @@ class AQIMap {
             this.map.removeLayer(this.markers.routes[type]);
         }
         
-        const coordinates = routeData.coordinates.map(coord => [coord[0], coord[1]]);
+        // Handle different coordinate formats
+        let coordinates;
+        if (routeData.waypoints) {
+            // Clean route has waypoints with lat, lon, aqi
+            coordinates = routeData.waypoints.map(wp => [wp.lat, wp.lon]);
+        } else if (routeData.coordinates) {
+            // Fast route has coordinates as array of arrays
+            coordinates = routeData.coordinates;
+        } else {
+            console.error('Invalid route data format:', routeData);
+            return;
+        }
+        
         const color = type === 'clean' ? '#2ecc71' : '#e74c3c';
         const weight = type === 'clean' ? 5 : 4;
         
@@ -130,17 +142,19 @@ class AQIMap {
             smoothFactor: 1
         }).addTo(this.map);
         
-        // Add popup with route information
-        const analysis = routeData.analysis;
-        polyline.bindPopup(`
-            <div class="route-popup">
-                <h4>${type === 'clean' ? 'Clean Route' : 'Fast Route'}</h4>
-                <p><strong>Distance:</strong> ${Utils.formatDistance(analysis.total_distance_km)}</p>
-                <p><strong>Avg AQI:</strong> ${analysis.average_aqi.toFixed(1)}</p>
-                <p><strong>Max AQI:</strong> ${analysis.max_aqi.toFixed(1)}</p>
-                <p><strong>Min AQI:</strong> ${analysis.min_aqi.toFixed(1)}</p>
-            </div>
-        `);
+        // Add popup with route information if analysis is available
+        if (routeData.analysis) {
+            const analysis = routeData.analysis;
+            polyline.bindPopup(`
+                <div class="route-popup">
+                    <h4>${type === 'clean' ? 'Clean Route' : 'Fast Route'}</h4>
+                    <p><strong>Distance:</strong> ${Utils.formatDistance(analysis.total_distance_km)}</p>
+                    <p><strong>Avg AQI:</strong> ${analysis.average_aqi.toFixed(1)}</p>
+                    <p><strong>Max AQI:</strong> ${analysis.max_aqi.toFixed(1)}</p>
+                    <p><strong>Min AQI:</strong> ${analysis.min_aqi.toFixed(1)}</p>
+                </div>
+            `);
+        }
         
         this.markers.routes[type] = polyline;
         

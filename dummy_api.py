@@ -97,26 +97,36 @@ def get_clean_route():
         if not clean_path or not fast_path:
             return jsonify({'error': 'No route found'}), 404
         
-        # Convert paths to coordinates
-        def path_to_coords(path):
-            coords = []
+        # Convert paths to coordinates with AQI values
+        def path_to_coords_with_aqi(path):
+            waypoints = []
             for node in path:
                 node_data = graph.nodes[node]
-                coords.append([node_data['y'], node_data['x']])
-            return coords
+                lat = node_data['y']
+                lon = node_data['x']
+                aqi = interpolator.get_aqi_at_point(lat, lon)
+                waypoints.append({
+                    'lat': lat,
+                    'lon': lon,
+                    'aqi': aqi
+                })
+            return waypoints
         
         # Analyze routes
         clean_analysis = router.analyze_path_pollution(clean_path)
         fast_analysis = router.analyze_path_pollution(fast_path)
         
+        # Get clean route waypoints with AQI
+        clean_waypoints = path_to_coords_with_aqi(clean_path)
+        
         return jsonify({
             'clean_route': {
-                'coordinates': path_to_coords(clean_path),
+                'waypoints': clean_waypoints,
                 'node_count': len(clean_path),
                 'analysis': clean_analysis
             },
             'fast_route': {
-                'coordinates': path_to_coords(fast_path),
+                'coordinates': [[graph.nodes[node]['y'], graph.nodes[node]['x']] for node in fast_path],
                 'node_count': len(fast_path),
                 'analysis': fast_analysis
             },

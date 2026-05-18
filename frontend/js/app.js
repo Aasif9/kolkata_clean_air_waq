@@ -3,6 +3,7 @@ class AQIRouteApp {
     constructor() {
         this.api = new AQIAPI();
         this.map = new AQIMap();
+        this.storage = new RouteStorage();
         this.currentRoutes = null;
         this.selectedRoute = null;
         this.startPoint = null;
@@ -23,6 +24,9 @@ class AQIRouteApp {
         // Load AQI stations
         await this.loadAQIStations();
         
+        // Load saved routes
+        this.loadSavedRoutes();
+        
         // Update pollution slider
         this.updatePollutionDescription();
         
@@ -38,10 +42,8 @@ class AQIRouteApp {
         document.getElementById('clearBtn').addEventListener('click', () => this.clearAll());
         document.getElementById('centerBtn').addEventListener('click', () => this.map.centerMap());
         document.getElementById('fullscreenBtn').addEventListener('click', () => this.map.toggleFullscreen());
+        document.getElementById('viewEndpointsBtn').addEventListener('click', () => this.viewRouteDetails());
         
-        // Route selection buttons
-        document.getElementById('showFastBtn').addEventListener('click', () => this.selectRoute('fast'));
-        document.getElementById('showCleanBtn').addEventListener('click', () => this.selectRoute('clean'));
         
         // Pollution slider
         const slider = document.getElementById('pollutionSlider');
@@ -55,6 +57,12 @@ class AQIRouteApp {
         // Location buttons
         document.getElementById('locateStartBtn').addEventListener('click', () => this.locatePoint('start'));
         document.getElementById('locateEndBtn').addEventListener('click', () => this.locatePoint('end'));
+        
+        // Storage controls
+        document.getElementById('refreshSavedBtn').addEventListener('click', () => this.loadSavedRoutes());
+        document.getElementById('exportRoutesBtn').addEventListener('click', () => this.exportRoutes());
+        document.getElementById('importRoutesBtn').addEventListener('click', () => this.importRoutes());
+        document.getElementById('importFileInput').addEventListener('change', (e) => this.handleImportFile(e));
         
         // Error toast close
         document.getElementById('closeErrorBtn').addEventListener('click', () => {
@@ -232,69 +240,63 @@ class AQIRouteApp {
             Utils.setLoading(false);
         }
     }
- 
+
     displayRoutes(data) {
         // Draw routes on map
         this.map.drawRoute(data.clean_route, 'clean');
         this.map.drawRoute(data.fast_route, 'fast');
         
-        // Update route cards
-        this.updateRouteCards(data);
+        // Update route summary
+        this.updateRouteSummary(data.clean_route);
         
-        // Update comparison
-        this.updateComparison(data.comparison);
+        // Update waypoints list
+        this.updateWaypointsList(data.clean_route.waypoints);
         
-        // Select clean route by default
-        this.selectRoute('clean');
+        // Store full route data for the separate page
+        this.currentRoutes = data;
+        
+        // Save route to localStorage
+        try {
+            this.storage.saveRoute(data, this.startPoint, this.endPoint);
+            console.log('Route saved to localStorage');
+        } catch (error) {
+            console.error('Failed to save route:', error);
+        }
+        
+        // Highlight clean route on map
+        this.map.highlightRoute('clean');
     }
- 
-    updateRouteCards(data) {
-        // Fast route
-        const fastAnalysis = data.fast_route.analysis;
-        document.getElementById('fastDistance').textContent = Utils.formatDistance(fastAnalysis.total_distance_km);
-        document.getElementById('fastAQI').textContent = fastAnalysis.average_aqi.toFixed(1);
-        
-        // Clean route
-        const cleanAnalysis = data.clean_route.analysis;
-        document.getElementById('cleanDistance').textContent = Utils.formatDistance(cleanAnalysis.total_distance_km);
-        document.getElementById('cleanAQI').textContent = cleanAnalysis.average_aqi.toFixed(1);
+
+    updateRouteSummary(cleanRoute) {
+        const analysis = cleanRoute.analysis;
+        document.getElementById('cleanDistance').textContent = Utils.formatDistance(analysis.total_distance_km);
+        document.getElementById('cleanAQI').textContent = analysis.average_aqi.toFixed(1);
+        document.getElementById('cleanExposure').textContent = analysis.pollution_exposure.toFixed(1);
     }
- 
-    updateComparison(comparison) {
-        // Update trade-off values
-        const extraDistance = comparison.distance_increase_percent;
-        const aqiImprovement = comparison.aqi_improvement;
+
+    updateWaypointsList(waypoints) {
+        const waypointsList = document.getElementById('waypointsList');
         
-        document.getElementById('extraDistance').textContent = `${extraDistance > 0 ? '+' : ''}${extraDistance.toFixed(1)}%`;
-        document.getElementById('aqiImprovement').textContent = `${aqiImprovement > 0 ? '+' : ''}${aqiImprovement.toFixed(1)}`;
+        // Show first 20 waypoints to avoid overwhelming the UI
+        const displayWaypoints = waypoints.slice(0, 20);
         
-        // Generate recommendation
-        const recommendation = Utils.generateRecommendation(
-            this.currentRoutes.clean_route,
-            this.currentRoutes.fast_route,
-            comparison
-        );
+        const html = displayWaypoints.map((wp, index) => {
+            const category = Utils.getAQICategory(wp.aqi);
+            return `
+                <div class="waypoint-item">
+                    <span class="waypoint-index">${index + 1}</span>
+                    <span class="waypoint-coords">${wp.lat.toFixed(4)}, ${wp.lon.toFixed(4)}</span>
+                    <span class="waypoint-aqi aqi-${category}">${wp.aqi.toFixed(1)}</span>
+                </div>
+            `;
+        }).join('');
         
-        document.getElementById('recommendationText').textContent = recommendation;
-    }
- 
-    selectRoute(type) {
-        if (!this.currentRoutes) return;
+        const totalCount = waypoints.length;
+        const message = totalCount > 20 
+            ? `<div class="waypoints-note">Showing first 20 of ${totalCount} waypoints</div>` 
+            : '';
         
-        this.selectedRoute = type;
-        
-        // Update map
-        this.map.highlightRoute(type);
-        
-        // Update card styles
-        document.getElementById('fastRouteCard').classList.toggle('active', type === 'fast');
-        document.getElementById('cleanRouteCard').classList.toggle('active', type === 'clean');
-    }
- 
-    updatePollutionDescription() {
-        const factor = parseFloat(document.getElementById('pollutionSlider').value);
-        document.getElementById('pollutionValue').textContent = factor.toFixed(1);
-        document.getElementById('pollutionDescription').textContent = Utils.getPollutionDescription(factor);
+        waypointsList.innerHTML = message + html;
     }
  
     async recalculateIfRoutesExist() {
@@ -329,20 +331,175 @@ class AQIRouteApp {
     }
  
     resetUI() {
-        // Reset route cards
-        document.getElementById('fastDistance').textContent = '--';
-        document.getElementById('fastAQI').textContent = '--';
+        // Reset route summary
         document.getElementById('cleanDistance').textContent = '--';
         document.getElementById('cleanAQI').textContent = '--';
+        document.getElementById('cleanExposure').textContent = '--';
         
-        // Reset comparison
-        document.getElementById('extraDistance').textContent = '--';
-        document.getElementById('aqiImprovement').textContent = '--';
-        document.getElementById('recommendationText').textContent = 'Select start and end points to see recommendations';
+        // Reset waypoints list
+        document.getElementById('waypointsList').innerHTML = '<div class="loading">Calculate a route to see waypoints</div>';
+    }
+
+    viewRouteDetails() {
+        if (!this.currentRoutes) {
+            Utils.showError('Please calculate routes first to view details');
+            return;
+        }
+
+        // Store route data in sessionStorage for the details page
+        sessionStorage.setItem('routeData', JSON.stringify(this.currentRoutes));
+
+        // Open the route details page in a new tab
+        window.open('route-details.html', '_blank');
+    }
+
+    loadSavedRoutes() {
+        try {
+            const routes = this.storage.getAllRoutes();
+            this.updateRoutesHistory(routes);
+        } catch (error) {
+            console.error('Error loading saved routes:', error);
+        }
+    }
+
+    updateRoutesHistory(routes) {
+        const routesHistory = document.getElementById('routesHistory');
         
-        // Reset card active states
-        document.getElementById('fastRouteCard').classList.remove('active');
-        document.getElementById('cleanRouteCard').classList.remove('active');
+        if (routes.length === 0) {
+            routesHistory.innerHTML = '<div class="loading">No saved routes yet</div>';
+            return;
+        }
+
+        const html = routes.map(route => {
+            const date = this.storage.formatTimestamp(route.timestamp);
+            return `
+                <div class="route-history-item" data-route-id="${route.id}">
+                    <div class="route-history-header">
+                        <span class="route-history-date">${date}</span>
+                        <div class="route-history-actions">
+                            <button onclick="app.loadRoute('${route.id}')" title="Load Route">
+                                <i class="fas fa-route"></i>
+                            </button>
+                            <button onclick="app.viewSavedRouteDetails('${route.id}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="app.deleteRoute('${route.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="route-history-stats">
+                        <div class="route-stat">
+                            <span class="route-stat-label">Clean Dist:</span>
+                            <span class="route-stat-value clean">${Utils.formatDistance(route.metadata.cleanDistance)}</span>
+                        </div>
+                        <div class="route-stat">
+                            <span class="route-stat-label">Clean AQI:</span>
+                            <span class="route-stat-value clean">${route.metadata.cleanAQI.toFixed(1)}</span>
+                        </div>
+                        <div class="route-stat">
+                            <span class="route-stat-label">Fast Dist:</span>
+                            <span class="route-stat-value fast">${Utils.formatDistance(route.metadata.fastDistance)}</span>
+                        </div>
+                        <div class="route-stat">
+                            <span class="route-stat-label">Fast AQI:</span>
+                            <span class="route-stat-value fast">${route.metadata.fastAQI.toFixed(1)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        routesHistory.innerHTML = html;
+    }
+
+    loadRoute(routeId) {
+        try {
+            const route = this.storage.getRouteById(routeId);
+            if (!route) {
+                Utils.showError('Route not found');
+                return;
+            }
+
+            // Set start and end points
+            this.setStartPoint(route.startPoint.lat, route.startPoint.lon);
+            this.setEndPoint(route.endPoint.lat, route.endPoint.lon);
+
+            // Display the route
+            this.displayRoutes(route.data);
+            
+            Utils.showError('Route loaded successfully');
+        } catch (error) {
+            console.error('Error loading route:', error);
+            Utils.showError('Failed to load route');
+        }
+    }
+
+    viewSavedRouteDetails(routeId) {
+        try {
+            const route = this.storage.getRouteById(routeId);
+            if (!route) {
+                Utils.showError('Route not found');
+                return;
+            }
+
+            // Store route data in sessionStorage for the details page
+            sessionStorage.setItem('routeData', JSON.stringify(route.data));
+
+            // Open the route details page in a new tab
+            window.open('route-details.html', '_blank');
+        } catch (error) {
+            console.error('Error viewing route details:', error);
+            Utils.showError('Failed to view route details');
+        }
+    }
+
+    deleteRoute(routeId) {
+        if (confirm('Are you sure you want to delete this route?')) {
+            try {
+                this.storage.deleteRoute(routeId);
+                this.loadSavedRoutes();
+                Utils.showError('Route deleted successfully');
+            } catch (error) {
+                console.error('Error deleting route:', error);
+                Utils.showError('Failed to delete route');
+            }
+        }
+    }
+
+    exportRoutes() {
+        try {
+            const success = this.storage.exportRoutes();
+            if (success) {
+                Utils.showError('Routes exported successfully');
+            } else {
+                Utils.showError('Failed to export routes');
+            }
+        } catch (error) {
+            console.error('Error exporting routes:', error);
+            Utils.showError('Failed to export routes');
+        }
+    }
+
+    importRoutes() {
+        document.getElementById('importFileInput').click();
+    }
+
+    async handleImportFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        try {
+            const count = await this.storage.importRoutes(file);
+            this.loadSavedRoutes();
+            Utils.showError(`Imported ${count} routes successfully`);
+        } catch (error) {
+            console.error('Error importing routes:', error);
+            Utils.showError('Failed to import routes: ' + error.message);
+        }
+
+        // Reset file input
+        event.target.value = '';
     }
 }
  
