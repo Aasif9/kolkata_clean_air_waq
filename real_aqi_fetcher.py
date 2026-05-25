@@ -47,11 +47,11 @@ class RealAQIFetcher:
             print("Token confirmation link: https://aqicn.org/data-platform/token-confirm/ef18ef73-d35b-4d6a-a492-0bbea7429548")
             return []
         
-        # Default bounds for Kolkata 10km radius
+        # Custom bounds for central Kolkata 10km range on all sides
         # Center: 22.5726, 88.3639
-        # 10km ≈ 0.09 degrees
+        # 10km north/south/east/west
         if not bounds:
-            bounds = "22.4826,88.2739,22.6626,88.4539"  # 10km radius
+            bounds = "22.4825,88.2666,22.6627,88.4612"  # 10km central Kolkata bounding box
         
         url = f"https://api.waqi.info/v2/map/bounds/?latlng={bounds}&token={self.token}"
         

@@ -6,6 +6,7 @@ import numpy as np
 from scipy.spatial.distance import cdist
 import json
 import os
+from functools import lru_cache
 from typing import List, Dict, Optional
 from real_aqi_fetcher import RealAQIFetcher
 
@@ -77,36 +78,59 @@ class AQIService:
             raise RuntimeError("Insufficient stations for interpolation")
         
         if method == 'idw':
-            return self._inverse_distance_weighting(lat, lon)
+            return self._get_aqi_at_point_cached(round(lat, 5), round(lon, 5))
         elif method == 'nearest':
             return self._nearest_neighbor(lat, lon)
         else:
             return self._weighted_average(lat, lon)
+
+    @lru_cache(maxsize=2000)
+    def _get_aqi_at_point_cached(self, lat: float, lon: float) -> float:
+        return self._inverse_distance_weighting(lat, lon)
     
-    def _inverse_distance_weighting(self, lat: float, lon: float, power: float = 2) -> float:
-        """Inverse Distance Weighting interpolation"""
-        point = np.array([lat, lon])
+    def _inverse_distance_weighting(self, lat: float, lon: float, power: float = 2.5, radius_km: float = 5.0) -> float:
+        """Inverse Distance Weighting interpolation with radius filter and power parameter
+
+        Args:
+            lat: Latitude
+            lon: Longitude
+            power: Power parameter for IDW (higher = more local variation, default 2.5)
+            radius_km: Radius in km to filter stations (default 5.0)
+
+        Returns:
+            Interpolated AQI value
+        """
         station_coords = np.array([[s['lat'], s['lon']] for s in self.stations])
-        
-        distances = cdist([point], station_coords)[0]
-        
+        lat_distances = (station_coords[:, 0] - lat) * 111.0
+        lon_distances = (station_coords[:, 1] - lon) * 111.0 * np.cos(np.radians(lat))
+        distances = np.sqrt(np.square(lat_distances) + np.square(lon_distances))
+
         # Find very close station
         min_dist_idx = np.argmin(distances)
         if distances[min_dist_idx] < 0.001:
             return self.stations[min_dist_idx]['aqi']
-        
-        # Filter out stations with no AQI data
-        valid_indices = [i for i, s in enumerate(self.stations) if s['aqi'] is not None]
-        
+
+        # Filter out stations with no AQI data AND within radius
+        valid_indices = []
+        for i, s in enumerate(self.stations):
+            if s['aqi'] is not None and distances[i] <= radius_km:
+                valid_indices.append(i)
+
+        # Fallback to nearest station if no stations in radius
         if not valid_indices:
+            # Find nearest station with valid AQI
+            for i in np.argsort(distances):
+                if self.stations[i]['aqi'] is not None:
+                    return self.stations[i]['aqi']
             raise RuntimeError("No valid AQI data available")
-        
+
         valid_distances = distances[valid_indices]
-        valid_weights = 1 / (valid_distances + 0.1)
+        # Apply power parameter: weight = 1 / (distance^power)
+        valid_weights = 1 / (np.power(valid_distances + 0.1, power))
         valid_weights = valid_weights / valid_weights.sum()
-        
+
         valid_aqi = np.array([self.stations[i]['aqi'] for i in valid_indices])
-        
+
         interpolated_aqi = np.sum(valid_weights * valid_aqi)
         return interpolated_aqi
     

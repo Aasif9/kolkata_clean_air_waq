@@ -1,0 +1,254 @@
+[
+  {
+    "name": "Botanical Garden, Howrah",
+    "aqi": 54.0,
+    "lat": 22.554954,
+    "lon": 88.292568,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Fort William, Kolkata, India",
+    "aqi": 86.0,
+    "lat": 22.55664,
+    "lon": 88.342674,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Ballygunge, Kolkata, India",
+    "aqi": 79.0,
+    "lat": 22.5367507,
+    "lon": 88.3638022,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Ghusuri, Howrah, India",
+    "aqi": 119.0,
+    "lat": 22.611968,
+    "lon": 88.347422,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Sector V Industrial Township Authority, Nabadiganta Bhavan",
+    "aqi": 85.0,
+    "lat": 22.576099,
+    "lon": 88.434296,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Presidency University",
+    "aqi": 84.0,
+    "lat": 22.5763855,
+    "lon": 88.3610445,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Ballygunge Campus, C.U",
+    "aqi": 78.0,
+    "lat": 22.526701,
+    "lon": 88.36321,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Khalia mouza",
+    "aqi": 79.0,
+    "lat": 22.62328,
+    "lon": 88.294286,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Karunamoye Bus Stand",
+    "aqi": 64.0,
+    "lat": 22.587029,
+    "lon": 88.42074,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Howrah Municipal Office",
+    "aqi": 84.0,
+    "lat": 22.584017,
+    "lon": 88.33476,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bally G.P.",
+    "aqi": 73.0,
+    "lat": 22.642002,
+    "lon": 88.338262,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Solaris Ideal Riverview",
+    "aqi": 67.0,
+    "lat": 22.5544145,
+    "lon": 88.3096577,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "East Calcutta Girls College, Lake Town",
+    "aqi": 115.0,
+    "lat": 22.601583,
+    "lon": 88.404556,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Dasnagar, Howrah",
+    "aqi": 102.0,
+    "lat": 22.6025571,
+    "lon": 88.3105664,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Rabindra Bharati University, Kolkata, India",
+    "aqi": 108.0,
+    "lat": 22.627847,
+    "lon": 88.380669,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "National Atlas Bhaban",
+    "aqi": 71.0,
+    "lat": 22.5705348,
+    "lon": 88.430926,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Urbana Housing Complex",
+    "aqi": 78.0,
+    "lat": 22.511385,
+    "lon": 88.412384,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Flora Fountain",
+    "aqi": 73.0,
+    "lat": 22.548628,
+    "lon": 88.382256,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "WBPCB Office, Saltlake",
+    "aqi": 76.0,
+    "lat": 22.562212,
+    "lon": 88.409355,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Victoria, Kolkata, India",
+    "aqi": 121.0,
+    "lat": 22.5448082,
+    "lon": 88.3403691,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bhairab Ganguly College",
+    "aqi": 75.0,
+    "lat": 22.6596117,
+    "lon": 88.3803253,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "VIVEKANANDA COLLEGE FOR WOMEN, BARISHA",
+    "aqi": 69.0,
+    "lat": 22.4885267,
+    "lon": 88.3141944,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Avidipta Housing Complex",
+    "aqi": 67.0,
+    "lat": 22.493217,
+    "lon": 88.39831,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Kamarhati Municipality",
+    "aqi": 89.0,
+    "lat": 22.662251,
+    "lon": 88.379349,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bally Municipality",
+    "aqi": 75.0,
+    "lat": 22.6474767,
+    "lon": 88.3509999,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Rabindra Sarobar, Kolkata, India",
+    "aqi": 63.0,
+    "lat": 22.51106,
+    "lon": 88.35142,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Fortis Hospital",
+    "aqi": 73.0,
+    "lat": 22.52067,
+    "lon": 88.401204,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bethune College",
+    "aqi": 72.0,
+    "lat": 22.58851,
+    "lon": 88.367807,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Lady Brabourne College",
+    "aqi": 76.0,
+    "lat": 22.5451541,
+    "lon": 88.3673286,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Eksara Mouza",
+    "aqi": 76.0,
+    "lat": 22.63026,
+    "lon": 88.290811,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Anandanagar Panchayat",
+    "aqi": 78.0,
+    "lat": 22.618873,
+    "lon": 88.321871,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Jadavpur, Kolkata, India",
+    "aqi": 74.0,
+    "lat": 22.49929,
+    "lon": 88.36917,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Padmapukur, Howrah, India",
+    "aqi": 69.0,
+    "lat": 22.5687319,
+    "lon": 88.2797276,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Bidhannagar, Kolkata, India",
+    "aqi": 77.0,
+    "lat": 22.58157048,
+    "lon": 88.41002457,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Belur Math, Howrah, India",
+    "aqi": 84.0,
+    "lat": 22.629801,
+    "lon": 88.352017,
+    "station_id": "waqi_unknown"
+  },
+  {
+    "name": "Maulana Azad Collage",
+    "aqi": 77.0,
+    "lat": 22.560925,
+    "lon": 88.358155,
+    "station_id": "waqi_unknown"
+  }
+]

@@ -3,10 +3,32 @@ import numpy as np
 from geopy.distance import geodesic
  
 class SimplePollutionRouter:
-    def __init__(self, graph, aqi_interpolator, pollution_factor=2.0):
+    def __init__(self, graph, aqi_interpolator, pollution_factor=3.0):
         self.graph = graph
         self.aqi_interpolator = aqi_interpolator
         self.pollution_factor = pollution_factor
+
+    def get_pollution_penalty(self, aqi: float, factor: float = None) -> float:
+        """
+        Calculate pollution penalty based on AQI value
+        Tuned for Indian AQI range (50-150)
+
+        Args:
+            aqi: AQI value
+            factor: Pollution factor (uses instance default if not provided)
+
+        Returns:
+            Penalty multiplier
+        """
+        if factor is None:
+            factor = self.pollution_factor
+
+        if aqi <= 50:
+            return 1.0
+        elif aqi <= 100:
+            return 1.0 + factor * (aqi - 50) / 80.0
+        else:
+            return 1.0 + factor * (aqi - 50) / 50.0  # stronger penalty above 100
     
     def find_fastest_path(self, start_lat, start_lon, end_lat, end_lon):
         """Find fastest path using Dijkstra on travel time"""
@@ -30,32 +52,33 @@ class SimplePollutionRouter:
             return None
     
     def find_cleanest_path(self, start_lat, start_lon, end_lat, end_lon):
-        """Find cleanest path considering pollution"""
+        """Find cleanest path considering pollution using direct exposure minimization"""
         try:
             # Find nearest graph nodes
             start_node = self._find_graph_node(start_lat, start_lon)
             end_node = self._find_graph_node(end_lat, end_lon)
-            
-            # Create custom weight function
+
+            # Create custom weight function - direct exposure minimization
             def pollution_weight(u, v, d):
                 # Base travel time
                 travel_time = d.get('travel_time', 1)
-                
+
                 # Get coordinates for edge midpoint
                 u_data = self.graph.nodes[u]
                 v_data = self.graph.nodes[v]
                 mid_lat = (u_data['y'] + v_data['y']) / 2
                 mid_lon = (u_data['x'] + v_data['x']) / 2
-                
+
                 # Get AQI at midpoint
                 aqi = self.aqi_interpolator.get_aqi_at_point(mid_lat, mid_lon)
-                
-                # Calculate pollution penalty
-                pollution_penalty = 1 + (self.pollution_factor * (aqi / 100))
-                
-                # Return weighted travel time
-                return travel_time * pollution_penalty
-            
+
+                # Use improved pollution penalty function
+                penalty = self.get_pollution_penalty(aqi)
+
+                # Option B (Recommended): Direct exposure minimization
+                # This directly minimizes AQI exposure rather than time-penalty
+                return travel_time * penalty
+
             # Find path with pollution weights
             path = nx.shortest_path(
                 self.graph,
@@ -63,9 +86,9 @@ class SimplePollutionRouter:
                 target=end_node,
                 weight=pollution_weight
             )
-            
+
             return path
-            
+
         except (nx.NetworkXNoPath, nx.NodeNotFound) as e:
             print(f"No clean path found: {e}")
             return None
@@ -97,14 +120,36 @@ class SimplePollutionRouter:
                 'total_distance_km': 0,
                 'total_travel_time_min': 0,
                 'average_aqi': 85,
+                'length_weighted_average_aqi': 85,
                 'max_aqi': 85,
                 'min_aqi': 85,
-                'pollution_exposure': 0
+                'pollution_exposure': 0,
+                'total_exposure': 0,
+                'exposure_per_km': 0,
+                'aqi_category_percentages': {
+                    'good': 0,
+                    'moderate': 0,
+                    'unhealthy_for_sensitive_groups': 0,
+                    'unhealthy': 0,
+                    'very_unhealthy': 0,
+                    'hazardous': 0
+                },
+                'aqi_samples': 0
             }
         
         total_distance = 0.0
         total_travel_time = 0.0
         aqi_values = []
+        distance_weighted_aqi_sum = 0.0
+        total_exposure = 0.0
+        category_distances = {
+            'good': 0.0,
+            'moderate': 0.0,
+            'unhealthy_for_sensitive_groups': 0.0,
+            'unhealthy': 0.0,
+            'very_unhealthy': 0.0,
+            'hazardous': 0.0
+        }
         
         for i in range(len(path) - 1):
             u = path[i]
@@ -137,22 +182,49 @@ class SimplePollutionRouter:
             total_distance += distance
             total_travel_time += travel_time
             aqi_values.append(aqi)
+            distance_weighted_aqi_sum += aqi * distance
+            total_exposure += aqi * travel_time
+            category_distances[self._get_aqi_category(aqi)] += distance
         
         # Calculate statistics
         average_aqi = np.mean(aqi_values) if aqi_values else 85
         max_aqi = np.max(aqi_values) if aqi_values else 85
         min_aqi = np.min(aqi_values) if aqi_values else 85
+        length_weighted_average_aqi = distance_weighted_aqi_sum / total_distance if total_distance > 0 else average_aqi
         pollution_exposure = total_distance * average_aqi  # km * AQI
+        exposure_per_km = total_exposure / total_distance if total_distance > 0 else 0
+        aqi_category_percentages = {
+            category: (distance / total_distance * 100) if total_distance > 0 else 0
+            for category, distance in category_distances.items()
+        }
         
         return {
             'total_distance_km': total_distance,
             'total_travel_time_min': total_travel_time,
             'average_aqi': average_aqi,
+            'length_weighted_average_aqi': length_weighted_average_aqi,
             'max_aqi': max_aqi,
             'min_aqi': min_aqi,
             'pollution_exposure': pollution_exposure,
+            'total_exposure': total_exposure,
+            'exposure_per_km': exposure_per_km,
+            'aqi_category_percentages': aqi_category_percentages,
             'aqi_samples': len(aqi_values)
         }
+
+    def _get_aqi_category(self, aqi):
+        if aqi <= 50:
+            return 'good'
+        elif aqi <= 100:
+            return 'moderate'
+        elif aqi <= 150:
+            return 'unhealthy_for_sensitive_groups'
+        elif aqi <= 200:
+            return 'unhealthy'
+        elif aqi <= 300:
+            return 'very_unhealthy'
+        else:
+            return 'hazardous'
     
     def compare_routes(self, start_lat, start_lon, end_lat, end_lon):
         """Compare clean vs fast routes"""
